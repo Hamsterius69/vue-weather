@@ -1,0 +1,414 @@
+<template>
+  <div class="q-pt-lg">
+    <div class="row justify-center">
+      <q-input class="col-4 q-mr-md" dense v-on:keyup.enter="searchWather" style="max-height=10"
+               :loading='cityLoading' filled v-model="cityData" label="City, Country code">
+        <template v-slot:append>
+          <q-icon name="las la-search" />
+        </template>
+      </q-input>
+      <q-btn :loading="searchInProgress" class="col-2" color="primary" label="Check weather" size="md"
+             @click="searchWather" :disabled="!cityData">
+        <template v-slot:loading>
+          <q-spinner-hourglass class="on-left" />
+          Loading...
+        </template>
+      </q-btn>
+    </div>
+    <div v-if="weatherData && weatherData.name" class="q-pa-xl">
+      <q-responsive :ratio="4/3">
+        <q-card flat>
+          <div>
+            <q-parallax src="https://cdn.quasar.dev/img/mountains.jpg" :height="200"/>
+          </div>
+          <q-card-section>
+            <div class="row q-my-md">
+              <div class="col-6">
+                <div class="row q-my-md">
+                  <q-icon name="las la-map-marker" size="2em" />
+                  <div class="text-h6">location: </div>
+                  <div v-if="weatherData.sys" class="text-body1 q-pl-sm q-pt-xs">{{weatherData.name }}. {{weatherData.sys.country}}</div>
+                </div>
+                <div class="row q-my-md">
+                  <q-icon name="las la-cloud-sun" size="32px"/>
+                  <div class="text-h6">Current weather description: </div>
+                  <div v-if="weatherData && weatherData.weather && weatherData.weather[0].description" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.weather[0].description}} </div>
+                </div>
+                <div class="row q-my-md">
+                  <q-icon name="las la-thermometer" size="2em" />
+                  <div class="text-h6">Current temperature: </div>
+                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp)}} </div>
+                </div>
+                <div class="row q-my-md">
+                  <q-icon name="las la-temperature-high" size="32px"/>
+                  <div class="text-h6">Today's high temperature: </div>
+                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp_max)}} </div>
+                </div>
+                <div class="row q-my-md">
+                  <q-icon name="las la-temperature-low" size="32px"/>
+                  <div class="text-h6">Today's low temperature: </div>
+                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp_min)}} </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <img :src="cityMap" height="250" width="450"/>
+              </div>
+            </div>
+            <!--
+            <div class="row q-my-md">
+              <div class="col-6">
+                <div class="row">
+                  <q-icon name="las la-map-marker" size="2em" />
+                  <div class="text-h6">location: </div>
+                  <div v-if="weatherData.sys" class="text-body1 q-pl-sm q-pt-xs">{{weatherData.name }}. {{weatherData.sys.country}}</div>
+                </div>
+              </div>
+              <div class="col-6 ">
+                <div class="row">
+                  <q-icon name="las la-cloud-sun" size="32px"/>
+                  <div class="text-h6">Current weather description: </div>
+                  <div v-if="weatherData && weatherData.weather && weatherData.weather[0].description" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.weather[0].description}} </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6">
+                <div class="row">
+                  <q-icon name="las la-thermometer" size="2em" />
+                  <div class="text-h6">Current temperature: </div>
+                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp)}} </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="row">
+                  <q-icon name="las la-temperature-high" size="32px"/>
+                  <div class="text-h6">Today's high temperature: </div>
+                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp_max)}} </div>
+                </div>
+              </div>
+            </div>
+            <div class="row q-my-md">
+              <div>
+                <div class="row">
+                  <q-icon name="las la-temperature-low" size="32px"/>
+                  <div class="text-h6">Today's low temperature: </div>
+                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp_min)}} </div>
+                </div>
+              </div>
+            </div>
+            -->
+            <div class="row q-my-md">
+              <q-toggle v-model="showDetails" label="Show extra information"/>
+            </div>
+            <div v-if="showDetails">
+              <div class="row q-my-md">
+                <div class="col-6">
+                  <div class="row">
+                    <q-icon name="las la-wind" size="2em" />
+                    <div class="text-h6">Wind Speed: </div>
+                    <div v-if="weatherData.wind" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.wind.speed}} </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="row">
+                    <q-icon name="las la-tint" size="32px"/>
+                    <div class="text-h6">Humidity: </div>
+                    <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.main.humidity}} </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row q-my-md">
+                <div class="col-6">
+                  <div class="row">
+                    <q-icon name="las la-tachometer-alt" size="2em" />
+                    <div class="text-h6">Pressure: </div>
+                    <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.main.pressure}} </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="row">
+                    <q-icon name="las la-sun" size="32px"/>
+                    <div class="text-h6">Sunrise/Sunset Time: </div>
+                    <div v-if="weatherData.sys" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.sys.sunrise}} / {{weatherData.sys.sunset}} </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="q-pa-md">
+              <q-table
+                title="Forecast weather information"
+                :rows="forecastWeatherRows"
+                :columns="forecastWeatherColumns"
+                row-key="name"
+                :loading="forecastTableLoading"
+              />
+            </div>
+            <div class="q-pa-md">
+              <q-table
+                title="Historical weather information"
+                :rows="historicalWeatherRows"
+                :columns="historicalWeatherColumns"
+                row-key="name"
+                :loading="historicalTableLoading"
+              />
+            </div>
+          </q-card-section>
+        </q-card>
+      </q-responsive>
+    </div>
+  </div>
+</template>
+
+<script>
+import { ref, watch, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { useQuasar } from 'quasar'
+
+export default ({
+  name: 'WeatherForm',
+  setup () {
+    const store = useStore()
+    const $q = useQuasar()
+    const weatherData = ref({})
+    const cityData = ref('')
+    const autocompleteAvailable = ref(false)
+    const cityMap = ref(null)
+    const cityLoading = ref(false)
+    const showDetails = ref(false)
+    const searchInProgress = ref(false)
+    const historicalTableLoading = ref(false)
+    const forecastTableLoading = ref(false)
+    const historicalWeatherColumns = ref([])
+    const forecastWeatherColumns = ref([])
+    const historicalWeatherRows = ref([])
+    const forecastWeatherRows = ref([])
+
+    onBeforeMount(() => {
+      loadCity()
+      loadHeaderTables()
+    })
+
+    watch(cityData, (curremtValue) => {
+      if (curremtValue.length % 3 === 0 && curremtValue.length && autocompleteAvailable.value) {
+        showAutocomplete()
+      }
+      autocompleteAvailable.value = true
+    })
+
+    const showNotify = (type, message) => {
+      $q.notify({
+        type: type,
+        message: message,
+        position: 'top-right',
+        timeout: 5000,
+        closeBtn: 'Close me'
+      })
+    }
+
+    const loadHeaderTables = () => {
+      historicalWeatherColumns.value.push({ name: 'date', align: 'left', label: 'Date', field: 'date', sortable: true })
+      historicalWeatherColumns.value.push({ name: 'temperature', align: 'left', label: 'Temperature', field: 'temperature' })
+      historicalWeatherColumns.value.push({ name: 'main', align: 'left', label: 'Main', field: 'main' })
+      historicalWeatherColumns.value.push({ name: 'description', align: 'left', label: 'Description', field: 'description' })
+      forecastWeatherColumns.value.push({ name: 'date', align: 'left', label: 'Date', field: 'date', sortable: true })
+      forecastWeatherColumns.value.push({ name: 'temperatureDay', align: 'left', label: 'Temperature day', field: 'temperatureDay' })
+      forecastWeatherColumns.value.push({ name: 'temperatureMin', align: 'left', label: 'Temperature min', field: 'temperatureMin' })
+      forecastWeatherColumns.value.push({ name: 'temperatureMax', align: 'left', label: 'Temperature max', field: 'temperatureMax' })
+      forecastWeatherColumns.value.push({ name: 'temperatureNight', align: 'left', label: 'Temperature night', field: 'temperatureNight' })
+      forecastWeatherColumns.value.push({ name: 'temperatureEve', align: 'left', label: 'Temperature eve', field: 'temperatureEve' })
+      forecastWeatherColumns.value.push({ name: 'temperatureMin', align: 'left', label: 'Temperature min', field: 'temperatureMin' })
+      forecastWeatherColumns.value.push({ name: 'temperatureMorn', align: 'left', label: 'Temperature morn', field: 'temperatureMorn' })
+      forecastWeatherColumns.value.push({ name: 'description', align: 'left', label: 'Description', field: 'description' })
+    }
+
+    const loadCity = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          cityLoading.value = true
+          store.dispatch('callGetCity', { lat: position.coords.latitude, lon: position.coords.longitude }).then((response) => {
+            cityData.value = `${response.data.address.city}, ${response.data.address.country_code}`
+            cityLoading.value = false
+          }).catch((error) => {
+            const errorMessage = `Error to get city from geolocation: ${error.response ? error.response.data.message : ''}`
+            cityLoading.value = false
+            showNotify('negative', errorMessage)
+          })
+        })
+      } else {
+        showNotify('info', 'please to have a better user experience allow the browser to use your location')
+      }
+    }
+
+    const showAutocomplete = () => {
+      store.dispatch('callGetAutocomplete', cityData.value).then((response) => {
+        const size = response.data.length
+        for (let i = 0; i < size; i += 1) {
+          const message = `${response.data[i].address.name}, ${response.data[i].address.country_code}?`
+          $q.notify({
+            color: 'purple',
+            message: message,
+            position: 'top-right',
+            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+            timeout: 6000,
+            actions: [{
+              label: 'You right',
+              color: 'white',
+              handler: () => {
+                $q.notify({
+                  color: 'green',
+                  icon: 'las la-smile-wink',
+                  iconSize: '50px',
+                  position: 'center',
+                  timeout: 3000
+                })
+                autocompleteAvailable.value = false
+                cityData.value = `${response.data[i].address.name}, ${response.data[i].address.country_code}`
+                searchWather()
+              }
+            }]
+          })
+        }
+      })
+    }
+
+    const loadMap = (lat, lon) => {
+      store.dispatch('callGetMap', { lat: lat, lon: lon }).then((response) => {
+        cityMap.value = convertImage(response.data)
+      }).catch((error) => {
+        const errorMessage = `Error to get city map from geolocation: ${error.response ? error.response.data.message : ''}`
+        cityLoading.value = false
+        showNotify('negative', errorMessage)
+      })
+    }
+
+    const convertImage = (image) => {
+      const blob = new Blob([image], { type: 'application/octet-binary' })
+      const url = URL.createObjectURL(blob)
+      const img = new Image()
+      img.onload = function () {
+        URL.revokeObjectURL(url)
+      }
+      img.src = url
+      return img
+    }
+
+    const loadForecastWeatherRows = (lat, lon) => {
+      forecastTableLoading.value = true
+      store.dispatch('callGetForecastWeather', { lat: lat, lon: lon }).then((response) => {
+        forecastWeatherRows.value.length = 0
+        response.data.daily.forEach(element => {
+          const row = {
+            date: epochToDateString(element.dt),
+            temperatureDay: kelvinAndCelsius(element.temp.day),
+            temperatureMin: kelvinAndCelsius(element.temp.min),
+            temperatureMax: kelvinAndCelsius(element.temp.max),
+            temperatureNight: kelvinAndCelsius(element.temp.night),
+            temperatureEve: kelvinAndCelsius(element.temp.eve),
+            temperatureMorn: kelvinAndCelsius(element.temp.morn),
+            description: element.weather[0].description
+          }
+          forecastWeatherRows.value.push(row)
+        })
+        forecastTableLoading.value = false
+      }).catch((error) => {
+        const errorMessage = `Error to get forecast weather: ${error.response ? error.response.data.message : ''}`
+        forecastTableLoading.value = false
+        showNotify('negative', errorMessage)
+      })
+    }
+
+    const loadHistoricalWeatherRows = (lat, lon) => {
+      const httpRequestList = []
+      for (let i = 5; i > 0; i -= 1) {
+        const args = {
+          lat: lat,
+          lon: lon,
+          dt: getEpochNumber(-i)
+        }
+        const httpRequest = store.dispatch('callGetHistoricalWeather', args)
+        httpRequestList.push(httpRequest)
+      }
+      historicalWeatherRows.value.length = 0
+      historicalTableLoading.value = true
+      Promise.allSettled(httpRequestList).then((values) => {
+        values.forEach((response) => {
+          const historicalData = response.value.data.current
+          const row = {
+            date: epochToDateString(historicalData.dt),
+            temperature: kelvinAndCelsius(historicalData.temp),
+            main: historicalData.weather[0].main,
+            description: historicalData.weather[0].description
+          }
+          historicalWeatherRows.value.push(row)
+        })
+        historicalTableLoading.value = false
+      }).catch((error) => {
+        const errorMessage = `Error to get historical weather: ${error.response ? error.response.data.message : ''}`
+        historicalTableLoading.value = false
+        showNotify('negative', errorMessage)
+      })
+    }
+
+    const getEpochNumber = (addNumberOfDays) => {
+      const currentDate = new Date()
+      const fiveDaysBefore = new Date(currentDate.setDate(currentDate.getDate() + addNumberOfDays))
+      const utcDate = fiveDaysBefore.toUTCString()
+      const epoch = Math.round(Date.parse(utcDate) / 1000)
+      return epoch
+    }
+
+    const roundToTwo = (num) => {
+      return +(Math.round(num + 'e+2') + 'e-2')
+    }
+
+    const kelvinAndCelsius = (kelvin) => {
+      const celsius = kelvin - 273.15
+      return `${kelvin}°K (${roundToTwo(celsius)}°C)`
+    }
+
+    const epochToDateString = (epoch) => {
+      const dt = new Date(epoch * 1000)
+      return dt.toString()
+    }
+
+    const searchWather = () => {
+      searchInProgress.value = true
+      store.dispatch('callGetWeather', cityData.value).then((response) => {
+        weatherData.value = response.data
+        searchInProgress.value = false
+        loadForecastWeatherRows(response.data.coord.lat, response.data.coord.lon)
+        loadHistoricalWeatherRows(response.data.coord.lat, response.data.coord.lon)
+        loadMap(response.data.coord.lat, response.data.coord.lon)
+      }).catch((error) => {
+        const errorMessage = `Error to get weather: ${error.response ? error.response.data.message : ''}`
+        searchInProgress.value = false
+        showNotify('negative', errorMessage)
+      })
+    }
+
+    return {
+      cityData,
+      showDetails,
+      searchInProgress,
+      weatherData,
+      historicalWeatherColumns,
+      historicalWeatherRows,
+      forecastWeatherColumns,
+      forecastWeatherRows,
+      forecastTableLoading,
+      historicalTableLoading,
+      cityLoading,
+      cityMap,
+      searchWather,
+      kelvinAndCelsius,
+      showAutocomplete
+    }
+  }
+})
+</script>
+
+<style scoped>
+  .my-card {
+    height: "100%" !important;
+  }
+</style>

@@ -1,13 +1,17 @@
 <template>
-  <q-page class="flex flex-center">
-    this is sparta
+  <q-page>
+    <weather-form />
   </q-page>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
+import WeatherForm from 'components/WeatherForm'
 
 export default defineComponent({
-  name: 'PageIndex'
+  name: 'PageIndex',
+  components: {
+    WeatherForm
+  }
 })
 </script>

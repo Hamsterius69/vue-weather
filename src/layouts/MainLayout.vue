@@ -6,7 +6,7 @@
           flat
           dense
           round
-          icon="menu"
+          icon="las la-bars"
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
@@ -52,13 +52,13 @@ const linksList = [
   {
     title: 'Developer',
     caption: 'LinkedIn profile',
-    icon: 'person',
+    icon: 'lab la-linkedin',
     link: 'https://www.linkedin.com/in/ariel-aguilar-r-b9b00085/'
   },
   {
     title: 'Github',
     caption: 'Github code',
-    icon: 'code',
+    icon: 'lab la-github',
     link: 'https://github.com/Hamsterius69/vue-technical-challenge-tinkerlist'
   }
 ]
