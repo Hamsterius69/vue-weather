@@ -24,114 +24,14 @@
           <q-card-section>
             <div class="row q-my-md">
               <div class="col-6">
+                <list-data :listData="basicWeatherData" key="basicData"/>
                 <div class="row q-my-md">
-                  <q-icon name="las la-map-marker" size="2em" />
-                  <div class="text-h6">location: </div>
-                  <div v-if="weatherData.sys" class="text-body1 q-pl-sm q-pt-xs">{{weatherData.name }}. {{weatherData.sys.country}}</div>
+                  <q-toggle v-model="showDetails" label="Show extra information"/>
                 </div>
-                <div class="row q-my-md">
-                  <q-icon name="las la-cloud-sun" size="32px"/>
-                  <div class="text-h6">Current weather description: </div>
-                  <div v-if="weatherData && weatherData.weather && weatherData.weather[0].description" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.weather[0].description}} </div>
-                </div>
-                <div class="row q-my-md">
-                  <q-icon name="las la-thermometer" size="2em" />
-                  <div class="text-h6">Current temperature: </div>
-                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp)}} </div>
-                </div>
-                <div class="row q-my-md">
-                  <q-icon name="las la-temperature-high" size="32px"/>
-                  <div class="text-h6">Today's high temperature: </div>
-                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp_max)}} </div>
-                </div>
-                <div class="row q-my-md">
-                  <q-icon name="las la-temperature-low" size="32px"/>
-                  <div class="text-h6">Today's low temperature: </div>
-                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp_min)}} </div>
-                </div>
+                <list-data v-if="showDetails" :listData="detailWeatherData" key="detailData"/>
               </div>
               <div class="col-6">
-                <img :src="cityMap" height="250" width="450"/>
-              </div>
-            </div>
-            <!--
-            <div class="row q-my-md">
-              <div class="col-6">
-                <div class="row">
-                  <q-icon name="las la-map-marker" size="2em" />
-                  <div class="text-h6">location: </div>
-                  <div v-if="weatherData.sys" class="text-body1 q-pl-sm q-pt-xs">{{weatherData.name }}. {{weatherData.sys.country}}</div>
-                </div>
-              </div>
-              <div class="col-6 ">
-                <div class="row">
-                  <q-icon name="las la-cloud-sun" size="32px"/>
-                  <div class="text-h6">Current weather description: </div>
-                  <div v-if="weatherData && weatherData.weather && weatherData.weather[0].description" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.weather[0].description}} </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <div class="row">
-                  <q-icon name="las la-thermometer" size="2em" />
-                  <div class="text-h6">Current temperature: </div>
-                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp)}} </div>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="row">
-                  <q-icon name="las la-temperature-high" size="32px"/>
-                  <div class="text-h6">Today's high temperature: </div>
-                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp_max)}} </div>
-                </div>
-              </div>
-            </div>
-            <div class="row q-my-md">
-              <div>
-                <div class="row">
-                  <q-icon name="las la-temperature-low" size="32px"/>
-                  <div class="text-h6">Today's low temperature: </div>
-                  <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{kelvinAndCelsius(weatherData.main.temp_min)}} </div>
-                </div>
-              </div>
-            </div>
-            -->
-            <div class="row q-my-md">
-              <q-toggle v-model="showDetails" label="Show extra information"/>
-            </div>
-            <div v-if="showDetails">
-              <div class="row q-my-md">
-                <div class="col-6">
-                  <div class="row">
-                    <q-icon name="las la-wind" size="2em" />
-                    <div class="text-h6">Wind Speed: </div>
-                    <div v-if="weatherData.wind" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.wind.speed}} </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="row">
-                    <q-icon name="las la-tint" size="32px"/>
-                    <div class="text-h6">Humidity: </div>
-                    <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.main.humidity}} </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row q-my-md">
-                <div class="col-6">
-                  <div class="row">
-                    <q-icon name="las la-tachometer-alt" size="2em" />
-                    <div class="text-h6">Pressure: </div>
-                    <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.main.pressure}} </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="row">
-                    <q-icon name="las la-sun" size="32px"/>
-                    <div class="text-h6">Sunrise/Sunset Time: </div>
-                    <div v-if="weatherData.sys" class="text-body1 q-pl-sm q-pt-xs"> {{weatherData.sys.sunrise}} / {{weatherData.sys.sunset}} </div>
-                  </div>
-                </div>
+                <location-map :position="center"/>
               </div>
             </div>
             <div class="q-pa-md">
@@ -163,13 +63,17 @@
 import { ref, watch, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
+import ListData from './ListData'
+import LocationMap from './LocationMap'
 
 export default ({
   name: 'WeatherForm',
+  components: { ListData, LocationMap },
   setup () {
     const store = useStore()
     const $q = useQuasar()
     const weatherData = ref({})
+    const center = ref({})
     const cityData = ref('')
     const autocompleteAvailable = ref(false)
     const cityMap = ref(null)
@@ -178,6 +82,8 @@ export default ({
     const searchInProgress = ref(false)
     const historicalTableLoading = ref(false)
     const forecastTableLoading = ref(false)
+    const basicWeatherData = ref([])
+    const detailWeatherData = ref([])
     const historicalWeatherColumns = ref([])
     const forecastWeatherColumns = ref([])
     const historicalWeatherRows = ref([])
@@ -371,6 +277,51 @@ export default ({
       return dt.toString()
     }
 
+    const setBasicWeatherData = () => {
+      basicWeatherData.value.length = 0
+      const location = {
+        icon: 'las la-map-marker', title: 'location:', response: `${weatherData.value.name}. ${weatherData.value.sys.country}`
+      }
+      const description = {
+        icon: 'las la-cloud-sun', title: 'Current weather description:', response: weatherData.value.weather[0].description
+      }
+      const temperature = {
+        icon: 'las la-thermometer', title: 'Current temperature:', response: kelvinAndCelsius(weatherData.value.main.temp)
+      }
+      const highTemperature = {
+        icon: 'las la-temperature-high', title: 'High temperature:', response: kelvinAndCelsius(weatherData.value.main.temp_max)
+      }
+      const lowTemperature = {
+        icon: 'las la-temperature-low', title: 'Low temperature:', response: kelvinAndCelsius(weatherData.value.main.temp_min)
+      }
+      basicWeatherData.value.push(location)
+      basicWeatherData.value.push(description)
+      basicWeatherData.value.push(temperature)
+      basicWeatherData.value.push(highTemperature)
+      basicWeatherData.value.push(lowTemperature)
+    }
+
+    const setDetailWeatherData = () => {
+      detailWeatherData.value.length = 0
+      const wind = {
+        icon: 'las la-wind', title: 'Wind Speed:', response: weatherData.value.wind.speed
+      }
+      const humidity = {
+        icon: 'las la-tint', title: 'Humidity:', response: weatherData.value.main.humidity
+      }
+      const pressure = {
+        icon: 'las la-tachometer-alt', title: 'Pressure:', response: weatherData.value.main.pressure
+      }
+      const sunrise = {
+        icon: 'las la-sun', title: 'Sunrise/Sunset Time:', response: `${weatherData.value.sys.sunrise} / ${weatherData.value.sys.sunset}`
+      }
+
+      detailWeatherData.value.push(wind)
+      detailWeatherData.value.push(humidity)
+      detailWeatherData.value.push(pressure)
+      detailWeatherData.value.push(sunrise)
+    }
+
     const searchWather = () => {
       searchInProgress.value = true
       store.dispatch('callGetWeather', cityData.value).then((response) => {
@@ -379,6 +330,9 @@ export default ({
         loadForecastWeatherRows(response.data.coord.lat, response.data.coord.lon)
         loadHistoricalWeatherRows(response.data.coord.lat, response.data.coord.lon)
         loadMap(response.data.coord.lat, response.data.coord.lon)
+        setBasicWeatherData()
+        setDetailWeatherData()
+        center.value = { lat: response.data.coord.lat, lng: response.data.coord.lon }
       }).catch((error) => {
         const errorMessage = `Error to get weather: ${error.response ? error.response.data.message : ''}`
         searchInProgress.value = false
@@ -399,6 +353,9 @@ export default ({
       historicalTableLoading,
       cityLoading,
       cityMap,
+      center,
+      basicWeatherData,
+      detailWeatherData,
       searchWather,
       kelvinAndCelsius,
       showAutocomplete
@@ -406,9 +363,3 @@ export default ({
   }
 })
 </script>
-
-<style scoped>
-  .my-card {
-    height: "100%" !important;
-  }
-</style>

@@ -15,8 +15,8 @@
     "core-js": "^3.6.5",
     "quasar": "^2.0.0",
     "vue": "^3.0.0",
-    "vue-images-viewer": "^1.1.0",
     "vue-router": "^4.0.0",
+    "vue3-google-map": "^0.10.0",
     "vuex": "^4.0.1"
   },
   "devDependencies": {
