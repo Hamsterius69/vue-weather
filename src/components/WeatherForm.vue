@@ -147,9 +147,9 @@ export default ({
 
     const showAutocomplete = () => {
       store.dispatch('callGetAutocomplete', cityData.value).then((response) => {
-        const size = response.data.length
+        const size = response.data.length / 3
         for (let i = 0; i < size; i += 1) {
-          const message = `${response.data[i].address.name}, ${response.data[i].address.country_code}?`
+          const message = `You mean... ${response.data[i].address.name}, ${response.data[i].address.country_code}?`
           $q.notify({
             color: 'purple',
             message: message,
