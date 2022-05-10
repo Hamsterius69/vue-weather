@@ -3,11 +3,6 @@
     <q-icon :name="item.icon" size="32px"/>
     <div class="text-h6"> {{ item.title }} </div>
     <div class="text-body1 q-pl-sm q-pt-xs"> {{ item.response }} </div>
-    <!--
-    <q-icon :name="item.value.icon" size="32px"/>
-    <div class="text-h6"> {{ item.value.title }} </div>
-    <div v-if="weatherData.main" class="text-body1 q-pl-sm q-pt-xs"> {{ item.value.response }} </div>
-    -->
   </div>
 </template>
 
