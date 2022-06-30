@@ -65,10 +65,14 @@ import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
 import ListData from './ListData'
 import LocationMap from './LocationMap'
+import { genericFunctions } from '../composable/GenericFunctions'
+
+const { useKelvinAndCelsius, getEpochNumber, epochToDateString, numberToHour } = genericFunctions()
 
 export default ({
   name: 'WeatherForm',
   components: { ListData, LocationMap },
+
   setup () {
     const store = useStore()
     const $q = useQuasar()
@@ -101,16 +105,6 @@ export default ({
       autocompleteAvailable.value = true
     })
 
-    const showNotify = (type, message) => {
-      $q.notify({
-        type: type,
-        message: message,
-        position: 'top-right',
-        timeout: 5000,
-        closeBtn: 'Close me'
-      })
-    }
-
     const loadHeaderTables = () => {
       historicalWeatherColumns.value.push({ name: 'date', align: 'left', label: 'Date', field: 'date', sortable: true })
       historicalWeatherColumns.value.push({ name: 'temperature', align: 'left', label: 'Temperature', field: 'temperature' })
@@ -120,10 +114,6 @@ export default ({
       forecastWeatherColumns.value.push({ name: 'temperatureDay', align: 'left', label: 'Temperature day', field: 'temperatureDay' })
       forecastWeatherColumns.value.push({ name: 'temperatureMin', align: 'left', label: 'Temperature min', field: 'temperatureMin' })
       forecastWeatherColumns.value.push({ name: 'temperatureMax', align: 'left', label: 'Temperature max', field: 'temperatureMax' })
-      forecastWeatherColumns.value.push({ name: 'temperatureNight', align: 'left', label: 'Temperature night', field: 'temperatureNight' })
-      forecastWeatherColumns.value.push({ name: 'temperatureEve', align: 'left', label: 'Temperature eve', field: 'temperatureEve' })
-      forecastWeatherColumns.value.push({ name: 'temperatureMin', align: 'left', label: 'Temperature min', field: 'temperatureMin' })
-      forecastWeatherColumns.value.push({ name: 'temperatureMorn', align: 'left', label: 'Temperature morn', field: 'temperatureMorn' })
       forecastWeatherColumns.value.push({ name: 'description', align: 'left', label: 'Description', field: 'description' })
     }
 
@@ -177,27 +167,6 @@ export default ({
       })
     }
 
-    const loadMap = (lat, lon) => {
-      store.dispatch('callGetMap', { lat: lat, lon: lon }).then((response) => {
-        cityMap.value = convertImage(response.data)
-      }).catch((error) => {
-        const errorMessage = `Error to get city map from geolocation: ${error.response ? error.response.data.message : ''}`
-        cityLoading.value = false
-        showNotify('negative', errorMessage)
-      })
-    }
-
-    const convertImage = (image) => {
-      const blob = new Blob([image], { type: 'application/octet-binary' })
-      const url = URL.createObjectURL(blob)
-      const img = new Image()
-      img.onload = function () {
-        URL.revokeObjectURL(url)
-      }
-      img.src = url
-      return img
-    }
-
     const loadForecastWeatherRows = (lat, lon) => {
       forecastTableLoading.value = true
       store.dispatch('callGetForecastWeather', { lat: lat, lon: lon }).then((response) => {
@@ -205,12 +174,9 @@ export default ({
         response.data.daily.forEach(element => {
           const row = {
             date: epochToDateString(element.dt),
-            temperatureDay: kelvinAndCelsius(element.temp.day),
-            temperatureMin: kelvinAndCelsius(element.temp.min),
-            temperatureMax: kelvinAndCelsius(element.temp.max),
-            temperatureNight: kelvinAndCelsius(element.temp.night),
-            temperatureEve: kelvinAndCelsius(element.temp.eve),
-            temperatureMorn: kelvinAndCelsius(element.temp.morn),
+            temperatureDay: useKelvinAndCelsius(element.temp.day),
+            temperatureMin: useKelvinAndCelsius(element.temp.min),
+            temperatureMax: useKelvinAndCelsius(element.temp.max),
             description: element.weather[0].description
           }
           forecastWeatherRows.value.push(row)
@@ -241,7 +207,7 @@ export default ({
           const historicalData = response.value.data.current
           const row = {
             date: epochToDateString(historicalData.dt),
-            temperature: kelvinAndCelsius(historicalData.temp),
+            temperature: useKelvinAndCelsius(historicalData.temp),
             main: historicalData.weather[0].main,
             description: historicalData.weather[0].description
           }
@@ -255,28 +221,6 @@ export default ({
       })
     }
 
-    const getEpochNumber = (addNumberOfDays) => {
-      const currentDate = new Date()
-      const fiveDaysBefore = new Date(currentDate.setDate(currentDate.getDate() + addNumberOfDays))
-      const utcDate = fiveDaysBefore.toUTCString()
-      const epoch = Math.round(Date.parse(utcDate) / 1000)
-      return epoch
-    }
-
-    const roundToTwo = (num) => {
-      return +(Math.round(num + 'e+2') + 'e-2')
-    }
-
-    const kelvinAndCelsius = (kelvin) => {
-      const celsius = kelvin - 273.15
-      return `${kelvin}°K (${roundToTwo(celsius)}°C)`
-    }
-
-    const epochToDateString = (epoch) => {
-      const dt = new Date(epoch * 1000)
-      return dt.toString()
-    }
-
     const setBasicWeatherData = () => {
       basicWeatherData.value.length = 0
       const location = {
@@ -286,13 +230,13 @@ export default ({
         icon: 'las la-cloud-sun', title: 'Current weather description:', response: weatherData.value.weather[0].description
       }
       const temperature = {
-        icon: 'las la-thermometer', title: 'Current temperature:', response: kelvinAndCelsius(weatherData.value.main.temp)
+        icon: 'las la-thermometer', title: 'Current temperature:', response: useKelvinAndCelsius(weatherData.value.main.temp)
       }
       const highTemperature = {
-        icon: 'las la-temperature-high', title: 'High temperature:', response: kelvinAndCelsius(weatherData.value.main.temp_max)
+        icon: 'las la-temperature-high', title: 'High temperature:', response: useKelvinAndCelsius(weatherData.value.main.temp_max)
       }
       const lowTemperature = {
-        icon: 'las la-temperature-low', title: 'Low temperature:', response: kelvinAndCelsius(weatherData.value.main.temp_min)
+        icon: 'las la-temperature-low', title: 'Low temperature:', response: useKelvinAndCelsius(weatherData.value.main.temp_min)
       }
       basicWeatherData.value.push(location)
       basicWeatherData.value.push(description)
@@ -304,22 +248,32 @@ export default ({
     const setDetailWeatherData = () => {
       detailWeatherData.value.length = 0
       const wind = {
-        icon: 'las la-wind', title: 'Wind Speed:', response: weatherData.value.wind.speed
+        icon: 'las la-wind', title: 'Wind Speed:', response: `${weatherData.value.wind.speed}km/h`
       }
       const humidity = {
-        icon: 'las la-tint', title: 'Humidity:', response: weatherData.value.main.humidity
+        icon: 'las la-tint', title: 'Humidity:', response: `${weatherData.value.main.humidity}%`
       }
       const pressure = {
-        icon: 'las la-tachometer-alt', title: 'Pressure:', response: weatherData.value.main.pressure
+        icon: 'las la-tachometer-alt', title: 'Pressure:', response: `${weatherData.value.main.pressure}mb`
       }
       const sunrise = {
-        icon: 'las la-sun', title: 'Sunrise/Sunset Time:', response: `${weatherData.value.sys.sunrise} / ${weatherData.value.sys.sunset}`
+        icon: 'las la-sun', title: 'Sunrise/Sunset Time:', response: `${numberToHour(weatherData.value.sys.sunrise)} / ${numberToHour(weatherData.value.sys.sunset)}`
       }
 
       detailWeatherData.value.push(wind)
       detailWeatherData.value.push(humidity)
       detailWeatherData.value.push(pressure)
       detailWeatherData.value.push(sunrise)
+    }
+
+    const showNotify = (type, message) => {
+      $q.notify({
+        type: type,
+        message: message,
+        position: 'top-right',
+        timeout: 5000,
+        closeBtn: 'Close me'
+      })
     }
 
     const searchWather = () => {
@@ -329,7 +283,6 @@ export default ({
         searchInProgress.value = false
         loadForecastWeatherRows(response.data.coord.lat, response.data.coord.lon)
         loadHistoricalWeatherRows(response.data.coord.lat, response.data.coord.lon)
-        loadMap(response.data.coord.lat, response.data.coord.lon)
         setBasicWeatherData()
         setDetailWeatherData()
         center.value = { lat: response.data.coord.lat, lng: response.data.coord.lon }
@@ -357,7 +310,6 @@ export default ({
       basicWeatherData,
       detailWeatherData,
       searchWather,
-      kelvinAndCelsius,
       showAutocomplete
     }
   }
