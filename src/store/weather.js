@@ -35,6 +35,8 @@ const mutations = {
 
 // initial state
 const state = {
+  xsBreakPoint: 880,
+  smBreakPoint: 1000
 }
 
 export default {

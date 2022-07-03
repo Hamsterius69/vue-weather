@@ -1,13 +1,14 @@
 <template>
   <div class="q-pt-lg">
     <div class="row justify-center">
-      <q-input class="col-4 q-mr-md" dense v-on:keyup.enter="searchWather" style="max-height=10"
+      <q-input :class="$q.screen.width >= xsBreakPoint ? 'col-4' && 'q-mr-md' : ''"
+               dense v-on:keyup.enter="searchWather" style="max-height=10"
                :loading='cityLoading' filled v-model="cityData" label="City, Country code">
         <template v-slot:append>
           <q-icon name="las la-search" />
         </template>
       </q-input>
-      <q-btn :loading="searchInProgress" class="col-2" color="primary" label="Check weather" size="md"
+      <q-btn :loading="searchInProgress" color="primary" label="Check weather" size="md"
              @click="searchWather" :disabled="!cityData">
         <template v-slot:loading>
           <q-spinner-hourglass class="on-left" />
@@ -23,14 +24,17 @@
           </div>
           <q-card-section>
             <div class="row q-my-md">
-              <div class="col-6">
+              <div :class="$q.screen.width >= smBreakPoint ? 'col-6' : 'col-12'">
                 <list-data :listData="basicWeatherData" key="basicData"/>
                 <div class="row q-my-md">
                   <q-toggle v-model="showDetails" label="Show extra information"/>
                 </div>
                 <list-data v-if="showDetails" :listData="detailWeatherData" key="detailData"/>
+                <div v-if="$q.screen.width < smBreakPoint">
+                  <location-map :position="center"/>
+                </div>
               </div>
-              <div class="col-6">
+              <div v-if="$q.screen.width >= smBreakPoint" class="col-6">
                 <location-map :position="center"/>
               </div>
             </div>
@@ -60,7 +64,7 @@
 </template>
 
 <script>
-import { ref, watch, onBeforeMount } from 'vue'
+import { ref, watch, onBeforeMount, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useQuasar } from 'quasar'
 import ListData from './ListData'
@@ -92,6 +96,8 @@ export default ({
     const forecastWeatherColumns = ref([])
     const historicalWeatherRows = ref([])
     const forecastWeatherRows = ref([])
+    const xsBreakPoint = computed(() => store.state.weather.xsBreakPoint)
+    const smBreakPoint = computed(() => store.state.weather.smBreakPoint)
 
     onBeforeMount(() => {
       loadCity()
@@ -310,7 +316,9 @@ export default ({
       basicWeatherData,
       detailWeatherData,
       searchWather,
-      showAutocomplete
+      showAutocomplete,
+      smBreakPoint,
+      xsBreakPoint
     }
   }
 })
