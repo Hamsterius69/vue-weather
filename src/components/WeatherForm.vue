@@ -20,7 +20,7 @@
       <q-responsive :ratio="4/3">
         <q-card flat>
           <div>
-            <q-parallax src="https://cdn.quasar.dev/img/mountains.jpg" :height="200"/>
+            <q-parallax src="https://cdn.quasar.dev/img/mountains.jpg" :height="$q.screen.width >= smBreakPoint ? 200 : 100"/>
           </div>
           <q-card-section>
             <div class="row q-my-md">
@@ -38,7 +38,7 @@
                 <location-map :position="center"/>
               </div>
             </div>
-            <div class="q-pa-md">
+            <div>
               <q-table
                 title="Forecast weather information"
                 :rows="forecastWeatherRows"
@@ -47,7 +47,7 @@
                 :loading="forecastTableLoading"
               />
             </div>
-            <div class="q-pa-md">
+            <div>
               <q-table
                 title="Historical weather information"
                 :rows="historicalWeatherRows"
