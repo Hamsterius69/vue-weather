@@ -12,7 +12,7 @@
           label="City, Country code"
           hint="Format: City, Country (e.g., Brussels, BE)"
           :error="!isInputValid"
-          :error-message="inputError"
+          :error-message="inputError || undefined"
           @blur="handleBlur"
           @focus="handleFocus"
           lazy-rules
