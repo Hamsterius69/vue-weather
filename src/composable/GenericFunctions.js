@@ -32,7 +32,7 @@ export function genericFunctions () {
 
   const epochToDateString = (epoch) => {
     const dt = new Date(epoch * 1000)
-    return `${dt.getFullYear()}/${setFormatTwoDigits(dt.getMonth())}/${setFormatTwoDigits(dt.getDate())}`
+    return `${dt.getFullYear()}/${setFormatTwoDigits(dt.getMonth() + 1)}/${setFormatTwoDigits(dt.getDate())}`
   }
 
   return {

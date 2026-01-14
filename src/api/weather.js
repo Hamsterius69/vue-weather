@@ -4,14 +4,22 @@ const baseEndpoint = 'https://api.openweathermap.org/data/2.5'
 const weather = 'weather'
 const onecall = 'onecall'
 const historicalWeather = 'timemachine'
-const appid = 'cc9f6c5a6b39c16407d129e3e7a4c339'
-const locationIQToken = 'pk.c6c6a4b31091555181893a51d208bb8b'
+const appid = process.env.OPENWEATHER_API_KEY
+const locationIQToken = process.env.LOCATIONIQ_TOKEN
 const locationBaseEndPoint = 'https://us1.locationiq.com/v1'
 const locationApiBaseEndPoint = 'https://api.locationiq.com/v1'
 const reverse = 'reverse.php'
 const autocomplete = 'autocomplete.php'
 const locationMap = 'https://maps.locationiq.com/v3/staticmap'
 const excludeData = 'current,minutely,hourly,alerts'
+
+// Validación de API keys
+if (!appid) {
+  console.error('OPENWEATHER_API_KEY is not defined in environment variables')
+}
+if (!locationIQToken) {
+  console.error('LOCATIONIQ_TOKEN is not defined in environment variables')
+}
 
 export default {
   getWeather (city) {

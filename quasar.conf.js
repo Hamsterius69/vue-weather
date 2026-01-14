@@ -9,6 +9,10 @@
 /* eslint-env node */
 const ESLintPlugin = require('eslint-webpack-plugin')
 const { configure } = require('quasar/wrappers')
+const dotenv = require('dotenv')
+
+// Load environment variables
+dotenv.config()
 
 module.exports = configure(function (ctx) {
   return {
@@ -47,6 +51,13 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       vueRouterMode: 'hash', // available values: 'hash', 'history'
+
+      // Environment variables available in Vue app
+      env: {
+        OPENWEATHER_API_KEY: process.env.OPENWEATHER_API_KEY,
+        LOCATIONIQ_TOKEN: process.env.LOCATIONIQ_TOKEN,
+        GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY
+      },
 
       // transpile: false,
       // publicPath: '/',
