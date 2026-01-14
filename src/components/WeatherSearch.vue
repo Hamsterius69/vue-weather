@@ -1,25 +1,67 @@
 <template>
   <div class="q-pt-lg">
     <div class="row justify-center">
-      <q-input
-        :class="$q.screen.width >= xsBreakPoint ? 'col-4' && 'q-mr-md' : ''"
-        dense
-        v-on:keyup.enter="handleSearch"
-        style="max-height=10"
-        :loading='cityLoading'
-        filled
-        v-model="cityInput"
-        label="City, Country code"
-        hint="Format: City, Country (e.g., Brussels, BE)"
-        :error="!isInputValid"
-        :error-message="inputError"
-        @blur="validateInput"
-        lazy-rules
-      >
-        <template v-slot:append>
-          <q-icon name="las la-search" />
-        </template>
-      </q-input>
+      <div :class="$q.screen.width >= xsBreakPoint ? 'col-4' && 'q-mr-md' : 'col-12'" style="position: relative;">
+        <q-input
+          dense
+          v-on:keyup.enter="handleSearch"
+          style="max-height=10"
+          :loading='cityLoading'
+          filled
+          v-model="cityInput"
+          label="City, Country code"
+          hint="Format: City, Country (e.g., Brussels, BE)"
+          :error="!isInputValid"
+          :error-message="inputError"
+          @blur="handleBlur"
+          @focus="handleFocus"
+          lazy-rules
+        >
+          <template v-slot:append>
+            <q-icon name="las la-search" />
+          </template>
+        </q-input>
+
+        <!-- Autocomplete dropdown tradicional -->
+        <q-menu
+          v-model="showAutocompleteMenu"
+          fit
+          no-parent-event
+          :offset="[0, 8]"
+        >
+          <q-list style="min-width: 300px">
+            <q-item
+              v-for="(suggestion, index) in autocompleteSuggestions"
+              :key="index"
+              clickable
+              v-close-popup
+              @click="selectSuggestion(suggestion)"
+            >
+              <q-item-section avatar>
+                <q-icon name="las la-map-marker-alt" color="primary" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ suggestion.name }}</q-item-label>
+                <q-item-label caption>{{ suggestion.country }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="autocompleteLoading">
+              <q-item-section>
+                <q-spinner color="primary" size="sm" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Loading suggestions...</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="!autocompleteLoading && autocompleteSuggestions.length === 0">
+              <q-item-section>
+                <q-item-label caption>No suggestions found</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </div>
+
       <q-btn
         :loading="searchInProgress"
         color="primary"
@@ -57,6 +99,10 @@ export default {
     const cityLoading = ref(false)
     const searchInProgress = ref(false)
     const autocompleteAvailable = ref(false)
+    const showAutocompleteMenu = ref(false)
+    const autocompleteSuggestions = ref([])
+    const autocompleteLoading = ref(false)
+    const isInputFocused = ref(false)
     const xsBreakPoint = computed(() => store.state.weather.xsBreakPoint)
 
     const isInputValid = computed(() => {
@@ -67,11 +113,28 @@ export default {
       loadCity()
     })
 
+    let autocompleteTimeout = null
+
     watch(cityInput, (currentValue) => {
-      if (currentValue.length % 3 === 0 && currentValue.length && autocompleteAvailable.value) {
-        showAutocomplete()
+      // Limpiar timeout anterior
+      if (autocompleteTimeout) {
+        clearTimeout(autocompleteTimeout)
       }
-      autocompleteAvailable.value = true
+
+      // Si el input está vacío, cerrar el menú
+      if (!currentValue || currentValue.length < 3) {
+        showAutocompleteMenu.value = false
+        autocompleteSuggestions.value = []
+        return
+      }
+
+      // Debounce de 500ms para no hacer demasiadas peticiones
+      autocompleteTimeout = setTimeout(() => {
+        if (autocompleteAvailable.value && isInputFocused.value) {
+          fetchAutocomplete()
+        }
+        autocompleteAvailable.value = true
+      }, 500)
     })
 
     const loadCity = () => {
@@ -96,36 +159,59 @@ export default {
       }
     }
 
-    const showAutocomplete = () => {
+    const fetchAutocomplete = () => {
+      if (!cityInput.value || cityInput.value.length < 3) {
+        return
+      }
+
+      autocompleteLoading.value = true
+      showAutocompleteMenu.value = true
+
       store.dispatch('callGetAutocomplete', cityInput.value).then((response) => {
-        const size = response.data.length / 3
-        for (let i = 0; i < size; i += 1) {
-          const message = `You mean... ${response.data[i].address.name}, ${response.data[i].address.country_code}?`
-          $q.notify({
-            color: 'purple',
-            message: message,
-            position: 'top-right',
-            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-            timeout: 6000,
-            actions: [{
-              label: 'You right',
-              color: 'white',
-              handler: () => {
-                $q.notify({
-                  color: 'green',
-                  icon: 'las la-smile-wink',
-                  iconSize: '50px',
-                  position: 'center',
-                  timeout: 3000
-                })
-                autocompleteAvailable.value = false
-                cityInput.value = `${response.data[i].address.name}, ${response.data[i].address.country_code}`
-                handleSearch()
-              }
-            }]
-          })
+        autocompleteSuggestions.value = []
+
+        // Limitar a 5 sugerencias
+        const maxSuggestions = Math.min(5, response.data.length)
+
+        for (let i = 0; i < maxSuggestions; i += 1) {
+          const suggestion = {
+            name: response.data[i].address.name,
+            country: response.data[i].address.country_code || response.data[i].address.country,
+            fullText: `${response.data[i].address.name}, ${response.data[i].address.country_code || response.data[i].address.country}`
+          }
+          autocompleteSuggestions.value.push(suggestion)
         }
+
+        autocompleteLoading.value = false
+      }).catch((error) => {
+        autocompleteLoading.value = false
+        showAutocompleteMenu.value = false
+        console.error('Autocomplete error:', error)
       })
+    }
+
+    const selectSuggestion = (suggestion) => {
+      autocompleteAvailable.value = false
+      cityInput.value = suggestion.fullText
+      showAutocompleteMenu.value = false
+      // Buscar automáticamente al seleccionar
+      handleSearch()
+    }
+
+    const handleFocus = () => {
+      isInputFocused.value = true
+      // Si ya hay sugerencias y hay texto, mostrar el menú
+      if (cityInput.value && cityInput.value.length >= 3 && autocompleteSuggestions.value.length > 0) {
+        showAutocompleteMenu.value = true
+      }
+    }
+
+    const handleBlur = () => {
+      // Delay para permitir que el click en una sugerencia se registre
+      setTimeout(() => {
+        isInputFocused.value = false
+        validateInput()
+      }, 200)
     }
 
     const showNotify = (type, message) => {
@@ -161,6 +247,9 @@ export default {
         return
       }
 
+      // Cerrar menú de autocomplete
+      showAutocompleteMenu.value = false
+
       searchInProgress.value = true
       emit('search', cityInput.value, () => {
         searchInProgress.value = false
@@ -173,9 +262,15 @@ export default {
       isInputValid,
       cityLoading,
       searchInProgress,
+      showAutocompleteMenu,
+      autocompleteSuggestions,
+      autocompleteLoading,
       xsBreakPoint,
       handleSearch,
-      validateInput
+      validateInput,
+      selectSuggestion,
+      handleFocus,
+      handleBlur
     }
   }
 }
