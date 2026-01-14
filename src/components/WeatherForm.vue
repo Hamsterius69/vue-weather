@@ -1,9 +1,5 @@
 <template>
   <div>
-    <weather-search
-      @search="handleSearch"
-      @city-loaded="handleCityLoaded"
-    />
     <weather-display
       v-if="weatherData && weatherData.name"
       :weatherData="weatherData"
@@ -17,42 +13,23 @@
 </template>
 
 <script>
-import WeatherSearch from './WeatherSearch'
+import { inject } from 'vue'
 import WeatherDisplay from './WeatherDisplay'
-import { useWeatherData } from '../composable/useWeatherData'
 
 export default {
   name: 'WeatherForm',
   components: {
-    WeatherSearch,
     WeatherDisplay
   },
 
   setup () {
-    const {
-      weatherData,
-      center,
-      forecastWeatherRows,
-      historicalWeatherRows,
-      forecastTableLoading,
-      historicalTableLoading,
-      fetchWeatherData
-    } = useWeatherData()
-
-    const handleSearch = (cityName, callback) => {
-      fetchWeatherData(cityName)
-        .then(() => {
-          if (callback) callback()
-        })
-        .catch(() => {
-          if (callback) callback()
-        })
-    }
-
-    const handleCityLoaded = (cityName) => {
-      // Optional: auto-search when city is loaded from geolocation
-      // fetchWeatherData(cityName)
-    }
+    // Inject weather data from MainLayout
+    const weatherData = inject('weatherData')
+    const center = inject('center')
+    const forecastWeatherRows = inject('forecastWeatherRows')
+    const historicalWeatherRows = inject('historicalWeatherRows')
+    const forecastTableLoading = inject('forecastTableLoading')
+    const historicalTableLoading = inject('historicalTableLoading')
 
     return {
       weatherData,
@@ -60,9 +37,7 @@ export default {
       forecastWeatherRows,
       historicalWeatherRows,
       forecastTableLoading,
-      historicalTableLoading,
-      handleSearch,
-      handleCityLoaded
+      historicalTableLoading
     }
   }
 }

@@ -1,12 +1,5 @@
 <template>
   <q-page class="preview-page">
-    <!-- TopBar -->
-    <top-bar
-      @search="handleSearch"
-      @city-loaded="handleCityLoaded"
-      @unit-changed="handleUnitChanged"
-    />
-
     <div class="preview-container">
       <!-- Weather Hero -->
       <weather-hero
@@ -74,7 +67,6 @@
 
 <script>
 import { ref } from 'vue'
-import TopBar from '../components/TopBar.vue'
 import WeatherHero from '../components/WeatherHero.vue'
 import WeatherStatCard from '../components/WeatherStatCard.vue'
 import StatsGrid from '../components/StatsGrid.vue'
@@ -85,7 +77,6 @@ import MapSection from '../components/MapSection.vue'
 export default {
   name: 'PreviewPage',
   components: {
-    TopBar,
     WeatherHero,
     WeatherStatCard,
     StatsGrid,
@@ -224,23 +215,7 @@ export default {
       lng: 4.3517
     })
 
-    const handleSearch = (cityName, callback) => {
-      console.log('Search:', cityName)
-      if (callback) callback()
-    }
-
-    const handleCityLoaded = (cityName) => {
-      console.log('City loaded:', cityName)
-    }
-
-    const handleUnitChanged = (unit) => {
-      console.log('Unit changed:', unit)
-    }
-
     return {
-      handleSearch,
-      handleCityLoaded,
-      handleUnitChanged,
       sampleForecasts,
       sampleHistorical,
       samplePosition
