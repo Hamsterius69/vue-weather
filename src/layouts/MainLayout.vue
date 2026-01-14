@@ -1,7 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <top-bar
-      @search="handleSearch"
       @city-loaded="handleCityLoaded"
       @unit-changed="handleUnitChanged"
     />
@@ -13,8 +12,9 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, provide } from 'vue'
 import TopBar from '../components/TopBar.vue'
+import { useWeatherData } from '../composable/useWeatherData'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -24,11 +24,24 @@ export default defineComponent({
   },
 
   setup () {
-    const handleSearch = (cityName, callback) => {
-      // This will be handled by WeatherForm through events
-      console.log('Search from TopBar:', cityName)
-      if (callback) callback()
-    }
+    const {
+      weatherData,
+      center,
+      forecastWeatherRows,
+      historicalWeatherRows,
+      forecastTableLoading,
+      historicalTableLoading,
+      fetchWeatherData
+    } = useWeatherData()
+
+    // Provide weather data and fetchWeatherData to all descendants
+    provide('weatherData', weatherData)
+    provide('center', center)
+    provide('forecastWeatherRows', forecastWeatherRows)
+    provide('historicalWeatherRows', historicalWeatherRows)
+    provide('forecastTableLoading', forecastTableLoading)
+    provide('historicalTableLoading', historicalTableLoading)
+    provide('fetchWeatherData', fetchWeatherData)
 
     const handleCityLoaded = (cityName) => {
       console.log('City loaded from TopBar:', cityName)
@@ -40,7 +53,6 @@ export default defineComponent({
     }
 
     return {
-      handleSearch,
       handleCityLoaded,
       handleUnitChanged
     }

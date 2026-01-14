@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { useTheme } from '../composable/useTheme'
 import WeatherSearch from './WeatherSearch.vue'
 
@@ -62,14 +62,28 @@ export default {
   components: {
     WeatherSearch
   },
-  emits: ['search', 'city-loaded', 'unit-changed'],
+  emits: ['city-loaded', 'unit-changed'],
 
   setup (props, { emit }) {
     const { isDark, toggleTheme } = useTheme()
     const temperatureUnit = ref('celsius')
 
+    // Inject fetchWeatherData from MainLayout
+    const fetchWeatherData = inject('fetchWeatherData', null)
+
     const handleSearch = (cityName, callback) => {
-      emit('search', cityName, callback)
+      if (fetchWeatherData) {
+        fetchWeatherData(cityName)
+          .then(() => {
+            if (callback) callback()
+          })
+          .catch(() => {
+            if (callback) callback()
+          })
+      } else {
+        console.error('fetchWeatherData not available')
+        if (callback) callback()
+      }
     }
 
     const handleCityLoaded = (cityName) => {
@@ -136,6 +150,8 @@ export default {
     flex: 1;
     max-width: 600px;
     margin: 0 var(--spacing-xl);
+    display: flex;
+    align-items: center;
   }
 
   &__mobile-search {
