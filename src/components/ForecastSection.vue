@@ -2,13 +2,13 @@
   <section class="forecast-section">
     <div class="forecast-section__header">
       <h2 class="forecast-section__title">
-        <q-icon name="las la-calendar-week" size="24px" />
-        7-Day Forecast
+        <q-icon name="las la-calendar-alt" size="28px" />
+        5-Day Forecast
       </h2>
     </div>
 
     <div v-if="loading" class="forecast-section__loading">
-      <q-skeleton-block v-for="i in 7" :key="i" class="forecast-section__skeleton" />
+      <q-skeleton v-for="i in 5" :key="i" type="rect" class="forecast-section__skeleton" />
     </div>
 
     <div v-else-if="forecasts && forecasts.length > 0" class="forecast-section__cards">
@@ -88,6 +88,7 @@ export default {
 
   &__cards {
     display: flex;
+    justify-content: center;
     gap: var(--spacing-lg);
     overflow-x: auto;
     padding-bottom: var(--spacing-sm);
@@ -114,6 +115,7 @@ export default {
 
   &__loading {
     display: flex;
+    justify-content: center;
     gap: var(--spacing-lg);
     overflow-x: auto;
   }

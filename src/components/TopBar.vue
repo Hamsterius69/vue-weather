@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { ref, inject } from 'vue'
+import { inject, ref } from 'vue'
 import { useTheme } from '../composable/useTheme'
 import WeatherSearch from './WeatherSearch.vue'
 
@@ -66,7 +66,9 @@ export default {
 
   setup (props, { emit }) {
     const { isDark, toggleTheme } = useTheme()
-    const temperatureUnit = ref('celsius')
+
+    // Inject shared temperature unit from MainLayout, fallback to local ref
+    const temperatureUnit = inject('temperatureUnit', ref('celsius'))
 
     // Inject fetchWeatherData from MainLayout
     const fetchWeatherData = inject('fetchWeatherData', null)
@@ -91,8 +93,8 @@ export default {
     }
 
     const toggleUnit = () => {
-      temperatureUnit.value = temperatureUnit.value === 'celsius' ? 'fahrenheit' : 'celsius'
-      emit('unit-changed', temperatureUnit.value)
+      const newUnit = temperatureUnit.value === 'celsius' ? 'fahrenheit' : 'celsius'
+      emit('unit-changed', newUnit)
     }
 
     return {

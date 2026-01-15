@@ -161,10 +161,29 @@ export default {
               lat: position.coords.latitude,
               lon: position.coords.longitude
             }).then((response) => {
-              skipNextAutocomplete.value = true
-              cityInput.value = `${response.data.address.city}, ${response.data.address.country_code}`
-              cityLoading.value = false
-              emit('city-loaded', cityInput.value)
+              const address = response.data.address
+              // LocationIQ puede devolver diferentes campos según la ubicación
+              // Priorizamos city/state sobre town/village para obtener nombres más reconocibles
+              const cityName = address.city ||
+                               address.state ||
+                               address.town ||
+                               address.village ||
+                               address.municipality ||
+                               address.county ||
+                               address.name ||
+                               ''
+              const countryCode = address.country_code || address.country || ''
+
+              if (cityName && countryCode) {
+                skipNextAutocomplete.value = true
+                cityInput.value = `${cityName}, ${countryCode}`
+                emit('city-loaded', cityInput.value)
+                // Ejecutar búsqueda automática al cargar la ubicación
+                cityLoading.value = false
+                handleSearch()
+              } else {
+                cityLoading.value = false
+              }
             }).catch((error) => {
               const errorMessage = `Error to get city from geolocation: ${error.response ? error.response.data.message : ''}`
               cityLoading.value = false
@@ -249,7 +268,7 @@ export default {
       $q.notify({
         type,
         message,
-        position: 'top-right',
+        position: 'bottom-right',
         timeout: 5000,
         closeBtn: 'Close me'
       })
