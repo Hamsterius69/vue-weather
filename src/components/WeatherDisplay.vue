@@ -26,6 +26,14 @@
         </stats-grid>
       </div>
 
+      <!-- Air Quality Section -->
+      <div class="weather-display__section">
+        <air-quality-section
+          :air-data="airPollutionData"
+          :loading="airPollutionLoading"
+        />
+      </div>
+
       <!-- Forecast Section -->
       <div class="weather-display__section">
         <forecast-section
@@ -33,31 +41,17 @@
           :loading="forecastTableLoading"
         />
       </div>
-
-      <!-- Historical Section -->
-      <div class="weather-display__section">
-        <historical-section
-          :historical-data="transformedHistoricalData"
-          :loading="historicalTableLoading"
-        />
-      </div>
-
-      <!-- Map Section -->
-      <div class="weather-display__section">
-        <map-section :position="center" :default-expanded="false" />
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { computed, watch } from 'vue'
+import { computed, watch, inject } from 'vue'
 import WeatherHero from './WeatherHero.vue'
 import WeatherStatCard from './WeatherStatCard.vue'
 import StatsGrid from './StatsGrid.vue'
+import AirQualitySection from './AirQualitySection.vue'
 import ForecastSection from './ForecastSection.vue'
-import HistoricalSection from './HistoricalSection.vue'
-import MapSection from './MapSection.vue'
 import { useWeatherDataTransform } from '../composable/useWeatherDataTransform'
 import { useTheme } from '../composable/useTheme'
 
@@ -67,9 +61,8 @@ export default {
     WeatherHero,
     WeatherStatCard,
     StatsGrid,
-    ForecastSection,
-    HistoricalSection,
-    MapSection
+    AirQualitySection,
+    ForecastSection
   },
   props: {
     weatherData: {
@@ -84,15 +77,15 @@ export default {
       type: Array,
       required: true
     },
-    historicalWeatherRows: {
-      type: Array,
-      required: true
+    airPollutionData: {
+      type: Object,
+      default: null
     },
     forecastTableLoading: {
       type: Boolean,
       default: false
     },
-    historicalTableLoading: {
+    airPollutionLoading: {
       type: Boolean,
       default: false
     }
@@ -102,16 +95,32 @@ export default {
     const {
       transformWeatherHero,
       transformWeatherStats,
-      transformForecastData,
-      transformHistoricalData
+      transformForecastData
     } = useWeatherDataTransform()
 
     const { setWeatherCondition } = useTheme()
 
-    const heroData = computed(() => transformWeatherHero(props.weatherData))
-    const statsData = computed(() => transformWeatherStats(props.weatherData))
-    const transformedForecastData = computed(() => transformForecastData(props.forecastWeatherRows))
-    const transformedHistoricalData = computed(() => transformHistoricalData(props.historicalWeatherRows))
+    // Inject temperature unit to make computed properties reactive to unit changes
+    const temperatureUnit = inject('temperatureUnit')
+
+    // Include temperatureUnit.value in computed to trigger re-computation when unit changes
+    const heroData = computed(() => {
+      // eslint-disable-next-line no-unused-expressions
+      temperatureUnit?.value
+      return transformWeatherHero(props.weatherData)
+    })
+
+    const statsData = computed(() => {
+      // eslint-disable-next-line no-unused-expressions
+      temperatureUnit?.value
+      return transformWeatherStats(props.weatherData)
+    })
+
+    const transformedForecastData = computed(() => {
+      // eslint-disable-next-line no-unused-expressions
+      temperatureUnit?.value
+      return transformForecastData(props.forecastWeatherRows)
+    })
 
     // Update weather condition when weather data changes
     watch(() => props.weatherData, (newWeatherData) => {
@@ -126,8 +135,7 @@ export default {
     return {
       heroData,
       statsData,
-      transformedForecastData,
-      transformedHistoricalData
+      transformedForecastData
     }
   }
 }

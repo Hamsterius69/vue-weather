@@ -28,28 +28,34 @@ export default defineComponent({
       weatherData,
       center,
       forecastWeatherRows,
-      historicalWeatherRows,
+      airPollutionData,
       forecastTableLoading,
-      historicalTableLoading,
-      fetchWeatherData
+      airPollutionLoading,
+      fetchWeatherData,
+      temperatureUnit,
+      convertTemperature,
+      convertFromKelvin,
+      setTemperatureUnit
     } = useWeatherData()
 
     // Provide weather data and fetchWeatherData to all descendants
     provide('weatherData', weatherData)
     provide('center', center)
     provide('forecastWeatherRows', forecastWeatherRows)
-    provide('historicalWeatherRows', historicalWeatherRows)
+    provide('airPollutionData', airPollutionData)
     provide('forecastTableLoading', forecastTableLoading)
-    provide('historicalTableLoading', historicalTableLoading)
+    provide('airPollutionLoading', airPollutionLoading)
     provide('fetchWeatherData', fetchWeatherData)
+    provide('temperatureUnit', temperatureUnit)
+    provide('convertTemperature', convertTemperature)
+    provide('convertFromKelvin', convertFromKelvin)
 
-    const handleCityLoaded = (cityName) => {
-      console.log('City loaded from TopBar:', cityName)
+    const handleCityLoaded = () => {
+      // City loaded event handled
     }
 
     const handleUnitChanged = (unit) => {
-      console.log('Unit changed from TopBar:', unit)
-      // TODO: Implement temperature unit conversion
+      setTemperatureUnit(unit)
     }
 
     return {

@@ -5,9 +5,9 @@
       :weatherData="weatherData"
       :center="center"
       :forecastWeatherRows="forecastWeatherRows"
-      :historicalWeatherRows="historicalWeatherRows"
+      :airPollutionData="airPollutionData"
       :forecastTableLoading="forecastTableLoading"
-      :historicalTableLoading="historicalTableLoading"
+      :airPollutionLoading="airPollutionLoading"
     />
   </div>
 </template>
@@ -27,17 +27,17 @@ export default {
     const weatherData = inject('weatherData')
     const center = inject('center')
     const forecastWeatherRows = inject('forecastWeatherRows')
-    const historicalWeatherRows = inject('historicalWeatherRows')
+    const airPollutionData = inject('airPollutionData')
     const forecastTableLoading = inject('forecastTableLoading')
-    const historicalTableLoading = inject('historicalTableLoading')
+    const airPollutionLoading = inject('airPollutionLoading')
 
     return {
       weatherData,
       center,
       forecastWeatherRows,
-      historicalWeatherRows,
+      airPollutionData,
       forecastTableLoading,
-      historicalTableLoading
+      airPollutionLoading
     }
   }
 }

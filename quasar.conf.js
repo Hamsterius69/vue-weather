@@ -55,8 +55,7 @@ module.exports = configure(function (ctx) {
       // Environment variables available in Vue app
       env: {
         OPENWEATHER_API_KEY: process.env.OPENWEATHER_API_KEY,
-        LOCATIONIQ_TOKEN: process.env.LOCATIONIQ_TOKEN,
-        GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY
+        LOCATIONIQ_TOKEN: process.env.LOCATIONIQ_TOKEN
       },
 
       // transpile: false,

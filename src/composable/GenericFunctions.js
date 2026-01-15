@@ -8,6 +8,10 @@ export function genericFunctions () {
     return `${kelvin}°K (${roundToTwo(celsius)}°C)`
   }
 
+  function kelvinToCelsius (kelvin) {
+    return Math.round(kelvin - 273.15)
+  }
+
   const getEpochNumber = (addNumberOfDays) => {
     const currentDate = new Date()
     const fiveDaysBefore = new Date(currentDate.setDate(currentDate.getDate() + addNumberOfDays))
@@ -38,6 +42,7 @@ export function genericFunctions () {
   return {
     roundToTwo,
     useKelvinAndCelsius,
+    kelvinToCelsius,
     getEpochNumber,
     epochToDateString,
     numberToHour

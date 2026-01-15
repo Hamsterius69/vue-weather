@@ -47,19 +47,14 @@
         </stats-grid>
       </div>
 
+      <!-- Air Quality Section -->
+      <div class="preview-section">
+        <air-quality-section :air-data="sampleAirQuality" :loading="false" />
+      </div>
+
       <!-- Forecast Section -->
       <div class="preview-section">
         <forecast-section :forecasts="sampleForecasts" :loading="false" />
-      </div>
-
-      <!-- Historical Section -->
-      <div class="preview-section">
-        <historical-section :historical-data="sampleHistorical" :loading="false" />
-      </div>
-
-      <!-- Map Section -->
-      <div class="preview-section">
-        <map-section :position="samplePosition" :default-expanded="false" />
       </div>
     </div>
   </q-page>
@@ -70,9 +65,8 @@ import { ref } from 'vue'
 import WeatherHero from '../components/WeatherHero.vue'
 import WeatherStatCard from '../components/WeatherStatCard.vue'
 import StatsGrid from '../components/StatsGrid.vue'
+import AirQualitySection from '../components/AirQualitySection.vue'
 import ForecastSection from '../components/ForecastSection.vue'
-import HistoricalSection from '../components/HistoricalSection.vue'
-import MapSection from '../components/MapSection.vue'
 
 export default {
   name: 'PreviewPage',
@@ -80,12 +74,17 @@ export default {
     WeatherHero,
     WeatherStatCard,
     StatsGrid,
-    ForecastSection,
-    HistoricalSection,
-    MapSection
+    AirQualitySection,
+    ForecastSection
   },
 
   setup () {
+    const sampleAirQuality = ref({
+      aqi: 1,
+      aqiLabel: 'Good',
+      aqiColor: 'positive'
+    })
+
     const sampleForecasts = ref([
       {
         date: '2024-01-14',
@@ -131,94 +130,12 @@ export default {
         weatherMain: 'Clear',
         windSpeed: 7,
         humidity: 58
-      },
-      {
-        date: '2024-01-19',
-        maxTemp: 23,
-        minTemp: 15,
-        description: 'Few clouds',
-        weatherMain: 'Clouds',
-        windSpeed: 9,
-        humidity: 62
-      },
-      {
-        date: '2024-01-20',
-        maxTemp: 20,
-        minTemp: 12,
-        description: 'Thunderstorm',
-        weatherMain: 'Thunderstorm',
-        windSpeed: 15,
-        humidity: 80
       }
     ])
-
-    const sampleHistorical = ref([
-      {
-        date: '2024-01-13',
-        maxTemp: 18,
-        minTemp: 10,
-        avgTemp: 14,
-        description: 'Broken clouds',
-        weatherMain: 'Clouds',
-        windSpeed: 8,
-        humidity: 65,
-        pressure: 1013
-      },
-      {
-        date: '2024-01-12',
-        maxTemp: 17,
-        minTemp: 9,
-        avgTemp: 13,
-        description: 'Light rain',
-        weatherMain: 'Rain',
-        windSpeed: 11,
-        humidity: 72,
-        pressure: 1010
-      },
-      {
-        date: '2024-01-11',
-        maxTemp: 19,
-        minTemp: 11,
-        avgTemp: 15,
-        description: 'Clear sky',
-        weatherMain: 'Clear',
-        windSpeed: 7,
-        humidity: 58,
-        pressure: 1015
-      },
-      {
-        date: '2024-01-10',
-        maxTemp: 16,
-        minTemp: 8,
-        avgTemp: 12,
-        description: 'Overcast clouds',
-        weatherMain: 'Clouds',
-        windSpeed: 9,
-        humidity: 68,
-        pressure: 1012
-      },
-      {
-        date: '2024-01-09',
-        maxTemp: 15,
-        minTemp: 7,
-        avgTemp: 11,
-        description: 'Few clouds',
-        weatherMain: 'Clouds',
-        windSpeed: 6,
-        humidity: 62,
-        pressure: 1016
-      }
-    ])
-
-    const samplePosition = ref({
-      lat: 50.8503,
-      lng: 4.3517
-    })
 
     return {
-      sampleForecasts,
-      sampleHistorical,
-      samplePosition
+      sampleAirQuality,
+      sampleForecasts
     }
   }
 }
