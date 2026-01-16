@@ -3,7 +3,7 @@
     <q-card-section class="stat-card__content">
       <!-- Icon -->
       <div class="stat-card__icon-wrapper">
-        <q-icon :name="icon" size="32px" class="stat-card__icon" />
+        <q-icon :name="icon" class="stat-card__icon" />
       </div>
 
       <!-- Value -->
@@ -49,23 +49,22 @@ export default {
 <style lang="scss" scoped>
 .stat-card {
   background-color: var(--surface);
-  border-radius: var(--radius-md);
+  border-radius: 0.75rem;
   transition: all var(--transition-base);
   height: 100%;
 
   // Light mode
   .body--light & {
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
 
     &:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
   }
 
   // Dark mode
   .body--dark & {
-    border: 1px solid var(--border);
+    border: 0.0625rem solid var(--border);
 
     &:hover {
       border-color: var(--accent);
@@ -77,15 +76,15 @@ export default {
   }
 
   &__content {
-    padding: var(--spacing-lg);
+    padding: 1rem;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 0.375rem;
 
     @media (max-width: 599px) {
-      padding: var(--spacing-md);
+      padding: 0.75rem;
     }
   }
 
@@ -93,47 +92,48 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 56px;
-    height: 56px;
-    border-radius: var(--radius-md);
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.5rem;
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: 0.25rem;
 
     @media (max-width: 599px) {
-      width: 48px;
-      height: 48px;
+      width: 2rem;
+      height: 2rem;
     }
   }
 
   &__icon {
     color: #FFFFFF;
+    font-size: 1.125rem !important;
+
+    @media (max-width: 599px) {
+      font-size: 1rem !important;
+    }
   }
 
   &__value {
-    font-size: var(--font-3xl);
+    font-size: 1.375rem;
     font-weight: var(--font-weight-bold);
     color: var(--text);
     line-height: 1;
 
     @media (max-width: 599px) {
-      font-size: var(--font-2xl);
+      font-size: 1.125rem;
     }
   }
 
   &__label {
-    font-size: var(--font-sm);
+    font-size: 0.75rem;
     font-weight: var(--font-weight-medium);
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-
-    @media (max-width: 599px) {
-      font-size: var(--font-xs);
-    }
+    letter-spacing: 0.02rem;
   }
 
   &__sublabel {
-    font-size: var(--font-xs);
+    font-size: 0.6875rem;
     color: var(--text-muted);
     opacity: 0.7;
   }

@@ -5,44 +5,50 @@
     :class="{ 'top-bar--dark': $q.dark.isActive }"
   >
     <q-toolbar class="top-bar__toolbar">
-      <!-- App Name -->
-      <q-toolbar-title class="top-bar__title">
-        <div class="top-bar__logo">
-          <q-icon name="las la-cloud-sun" size="28px" class="top-bar__logo-icon" />
-          <span class="top-bar__logo-text">WeatherApp</span>
-        </div>
-      </q-toolbar-title>
+      <!-- Cluster 1: App Identity -->
+      <div class="top-bar__identity">
+        <q-icon name="las la-cloud-sun" class="top-bar__logo-icon" />
+        <span class="top-bar__logo-text">WeatherApp</span>
+      </div>
 
-      <!-- City Search (center/right) -->
-      <div class="top-bar__search" v-if="$q.screen.gt.xs">
+      <!-- Cluster 2: Search (desktop only) -->
+      <div class="top-bar__search-cluster" v-if="$q.screen.gt.xs">
         <weather-search @search="handleSearch" @city-loaded="handleCityLoaded" />
       </div>
 
-      <!-- Theme Toggle -->
-      <q-btn
-        flat
-        round
-        dense
-        :icon="isDark ? 'las la-sun' : 'las la-moon'"
-        class="top-bar__theme-toggle"
-        @click="toggleTheme"
-        aria-label="Toggle theme"
-      >
-        <q-tooltip>{{ isDark ? 'Light mode' : 'Dark mode' }}</q-tooltip>
-      </q-btn>
+      <!-- Spacer -->
+      <q-space />
 
-      <!-- Optional: Temperature Unit Toggle -->
-      <q-btn
-        flat
-        dense
-        no-caps
-        class="top-bar__unit-toggle"
-        @click="toggleUnit"
-        aria-label="Toggle temperature unit"
-      >
-        <span class="top-bar__unit-text">{{ temperatureUnit === 'celsius' ? '°C' : '°F' }}</span>
-        <q-tooltip>Switch to {{ temperatureUnit === 'celsius' ? 'Fahrenheit' : 'Celsius' }}</q-tooltip>
-      </q-btn>
+      <!-- Cluster 3: Settings -->
+      <div class="top-bar__settings">
+        <!-- Theme Toggle -->
+        <q-btn
+          flat
+          round
+          :icon="isDark ? 'las la-sun' : 'las la-moon'"
+          class="top-bar__action-btn"
+          @click="toggleTheme"
+          aria-label="Toggle theme"
+        >
+          <q-tooltip :delay="250" class="custom-tooltip">
+            {{ isDark ? 'Switch to light mode' : 'Switch to dark mode' }}
+          </q-tooltip>
+        </q-btn>
+
+        <!-- Temperature Unit Toggle -->
+        <q-btn
+          flat
+          no-caps
+          class="top-bar__unit-btn"
+          @click="toggleUnit"
+          aria-label="Toggle temperature unit"
+        >
+          <span class="top-bar__unit-text">{{ temperatureUnit === 'celsius' ? '°C' : '°F' }}</span>
+          <q-tooltip :delay="250" class="custom-tooltip">
+            Switch to {{ temperatureUnit === 'celsius' ? 'Fahrenheit' : 'Celsius' }}
+          </q-tooltip>
+        </q-btn>
+      </div>
     </q-toolbar>
 
     <!-- Mobile Search (shown below toolbar on small screens) -->
@@ -112,81 +118,103 @@ export default {
 <style lang="scss" scoped>
 .top-bar {
   background-color: var(--surface);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 0.0625rem solid var(--border);
   box-shadow: none;
 
   &__toolbar {
-    padding: var(--spacing-sm) var(--spacing-lg);
-    min-height: 64px;
+    padding: 1rem 2rem;
+    min-height: 4.25rem;
+    gap: 1.5rem;
 
     @media (max-width: 599px) {
-      padding: var(--spacing-sm) var(--spacing-md);
+      padding: 0.75rem 1rem;
+      min-height: 3.75rem;
+      gap: 1rem;
     }
   }
 
-  &__title {
-    flex-shrink: 0;
-  }
-
-  &__logo {
+  // Cluster 1: App Identity
+  &__identity {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 0.625rem;
+    flex-shrink: 0;
   }
 
   &__logo-icon {
     color: var(--accent);
+    font-size: 1.75rem !important;
   }
 
   &__logo-text {
-    font-size: var(--font-lg);
-    font-weight: var(--font-weight-semibold);
+    font-size: 1.125rem;
+    font-weight: var(--font-weight-bold);
     color: var(--text);
+    white-space: nowrap;
 
     @media (max-width: 599px) {
-      font-size: var(--font-base);
+      font-size: 1rem;
     }
   }
 
-  &__search {
+  // Cluster 2: Search
+  &__search-cluster {
     flex: 1;
-    max-width: 600px;
-    margin: 0 var(--spacing-xl);
+    max-width: 36rem;
+    margin-left: 2rem;
     display: flex;
     align-items: center;
   }
 
-  &__mobile-search {
-    padding: 0 var(--spacing-md) var(--spacing-md);
-    background-color: var(--surface);
-    border-top: 1px solid var(--border);
+  // Cluster 3: Settings
+  &__settings {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
   }
 
-  &__theme-toggle {
+  &__mobile-search {
+    padding: 0.5rem 1rem 1rem;
+    background-color: var(--surface);
+    border-top: 0.0625rem solid var(--border);
+  }
+
+  &__action-btn {
     color: var(--text-muted);
+    width: 2.5rem;
+    height: 2.5rem;
     transition: all var(--transition-fast);
+
+    :deep(.q-icon) {
+      font-size: 1.25rem;
+    }
 
     &:hover {
       color: var(--accent);
-      background-color: rgba(var(--accent-rgb), 0.1);
+      background-color: rgba(245, 158, 11, 0.1);
     }
   }
 
-  &__unit-toggle {
+  &__unit-btn {
     color: var(--text-muted);
-    margin-left: var(--spacing-sm);
-    min-width: 40px;
+    min-width: 2.75rem;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    border-radius: var(--radius-sm);
     transition: all var(--transition-fast);
+    border: 0.0625rem solid var(--border);
 
     &:hover {
       color: var(--accent);
-      background-color: rgba(var(--accent-rgb), 0.1);
+      border-color: var(--accent);
+      background-color: rgba(245, 158, 11, 0.1);
     }
   }
 
   &__unit-text {
-    font-size: var(--font-sm);
-    font-weight: var(--font-weight-medium);
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-semibold);
   }
 }
 </style>

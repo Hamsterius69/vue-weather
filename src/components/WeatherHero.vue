@@ -1,11 +1,12 @@
 <template>
   <div class="weather-hero" :class="`weather-hero--${weatherCondition}`">
     <div class="weather-hero__gradient"></div>
+    <div class="weather-hero__pattern"></div>
 
     <div class="weather-hero__content">
       <!-- Location -->
       <div class="weather-hero__location">
-        <q-icon name="las la-map-marker-alt" size="20px" class="weather-hero__location-icon" />
+        <q-icon name="las la-map-marker-alt" class="weather-hero__location-icon" />
         <h1 class="weather-hero__city">{{ cityName }}</h1>
       </div>
 
@@ -13,7 +14,7 @@
       <div class="weather-hero__main">
         <!-- Weather Icon -->
         <div class="weather-hero__icon-wrapper">
-          <q-icon :name="weatherIcon" size="120px" class="weather-hero__icon" />
+          <q-icon :name="weatherIcon" class="weather-hero__icon" />
         </div>
 
         <!-- Temperature -->
@@ -104,17 +105,18 @@ export default {
 <style lang="scss" scoped>
 .weather-hero {
   position: relative;
-  border-radius: var(--radius-lg);
+  border-radius: 1rem;
   overflow: hidden;
-  margin-bottom: var(--spacing-xl);
-  min-height: 400px;
+  margin-bottom: 1.5rem;
+  min-height: 16rem;
   display: flex;
   align-items: center;
   justify-content: center;
 
   @media (max-width: 599px) {
-    min-height: 320px;
-    margin-bottom: var(--spacing-lg);
+    min-height: 14rem;
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
   }
 
   &__gradient {
@@ -124,29 +126,48 @@ export default {
     transition: opacity var(--transition-slow);
   }
 
-  // Sunny gradient
+  // Subtle pattern overlay for texture
+  &__pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.08;
+    background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.3) 1px, transparent 1px);
+    background-size: 1.5rem 1.5rem;
+    pointer-events: none;
+  }
+
+  // Sunny gradient - warm amber tones with depth
   &--sunny &__gradient {
-    background: linear-gradient(135deg, #F59E0B 0%, #FCD34D 100%);
+    background: linear-gradient(135deg, #B45309 0%, #D97706 25%, #F59E0B 50%, #FBBF24 75%, #FDE68A 100%);
   }
 
-  // Cloudy gradient
+  // Cloudy gradient - slate/blue cool tones
   &--cloudy &__gradient {
-    background: linear-gradient(135deg, #64748B 0%, #CBD5E1 100%);
+    background: linear-gradient(135deg, #334155 0%, #475569 30%, #64748B 60%, #94A3B8 100%);
   }
 
-  // Rainy gradient
+  // Rainy gradient - deep blue tones
   &--rainy &__gradient {
-    background: linear-gradient(135deg, #0EA5E9 0%, #7DD3FC 100%);
+    background: linear-gradient(135deg, #075985 0%, #0369A1 30%, #0EA5E9 60%, #38BDF8 100%);
   }
 
-  // Snowy gradient
+  // Snowy gradient - icy blue/white tones
   &--snowy &__gradient {
-    background: linear-gradient(135deg, #38BDF8 0%, #E0F2FE 100%);
+    background: linear-gradient(135deg, #0369A1 0%, #0284C7 30%, #38BDF8 60%, #BAE6FD 100%);
   }
 
-  // Dark mode overlay
+  // Dark mode - slightly subdued
   .body--dark &__gradient {
-    opacity: 0.8;
+    opacity: 0.9;
+  }
+
+  // Bottom vignette for depth
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.15) 100%);
+    pointer-events: none;
   }
 
   &__content {
@@ -154,11 +175,11 @@ export default {
     z-index: 1;
     text-align: center;
     color: #FFFFFF;
-    padding: var(--spacing-2xl) var(--spacing-xl);
+    padding: 2rem 1.5rem;
     width: 100%;
 
     @media (max-width: 599px) {
-      padding: var(--spacing-xl) var(--spacing-lg);
+      padding: 1.5rem 1rem;
     }
   }
 
@@ -166,22 +187,23 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-lg);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   &__location-icon {
     opacity: 0.9;
+    font-size: 1.25rem !important;
   }
 
   &__city {
-    font-size: var(--font-3xl);
+    font-size: 1.5rem;
     font-weight: var(--font-weight-semibold);
     margin: 0;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    text-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
 
     @media (max-width: 599px) {
-      font-size: var(--font-2xl);
+      font-size: 1.25rem;
     }
   }
 
@@ -189,21 +211,26 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--spacing-xl);
-    margin-bottom: var(--spacing-lg);
+    gap: 1.5rem;
+    margin-bottom: 0.75rem;
 
     @media (max-width: 599px) {
       flex-direction: column;
-      gap: var(--spacing-md);
+      gap: 0.5rem;
     }
   }
 
   &__icon-wrapper {
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 0.25rem 0.75rem rgba(0, 0, 0, 0.25));
   }
 
   &__icon {
     color: #FFFFFF;
+    font-size: 4.5rem !important;
+
+    @media (max-width: 599px) {
+      font-size: 3.5rem !important;
+    }
   }
 
   &__temp-section {
@@ -215,42 +242,42 @@ export default {
   }
 
   &__temp {
-    font-size: var(--font-5xl);
+    font-size: 4rem;
     font-weight: var(--font-weight-bold);
     line-height: 1;
-    margin-bottom: var(--spacing-sm);
-    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    margin-bottom: 0.25rem;
+    text-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.25);
 
     @media (max-width: 599px) {
-      font-size: var(--font-4xl);
+      font-size: 3rem;
     }
   }
 
   &__feels-like {
-    font-size: var(--font-lg);
+    font-size: 1rem;
     font-weight: var(--font-weight-normal);
     opacity: 0.9;
 
     @media (max-width: 599px) {
-      font-size: var(--font-base);
+      font-size: 0.875rem;
     }
   }
 
   &__condition {
-    font-size: var(--font-2xl);
+    font-size: 1.125rem;
     font-weight: var(--font-weight-medium);
     text-transform: capitalize;
-    margin-bottom: var(--spacing-md);
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    margin-bottom: 0.25rem;
+    text-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.2);
 
     @media (max-width: 599px) {
-      font-size: var(--font-xl);
+      font-size: 1rem;
     }
   }
 
   &__updated {
-    font-size: var(--font-sm);
-    opacity: 0.8;
+    font-size: 0.8125rem;
+    opacity: 0.75;
   }
 }
 </style>
