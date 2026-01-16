@@ -56,8 +56,8 @@ export default {
 <style lang="scss" scoped>
 .forecast-section {
   background-color: var(--surface);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
   transition: all var(--transition-base);
 
   .body--light & {
@@ -65,47 +65,48 @@ export default {
   }
 
   .body--dark & {
-    border: 1px solid var(--border);
+    border: 0.0625rem solid var(--border);
   }
 
   &__header {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 1rem;
   }
 
   &__title {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    font-size: var(--font-xl);
+    gap: 0.5rem;
+    font-size: 1.125rem;
     font-weight: var(--font-weight-semibold);
     color: var(--text);
     margin: 0;
 
     .q-icon {
       color: var(--accent);
+      font-size: 1.375rem !important;
     }
   }
 
   &__cards {
     display: flex;
-    justify-content: center;
-    gap: var(--spacing-lg);
+    justify-content: flex-start;
+    gap: 0.75rem;
     overflow-x: auto;
-    padding-bottom: var(--spacing-sm);
+    padding-bottom: 0.25rem;
 
     /* Custom scrollbar */
     &::-webkit-scrollbar {
-      height: 8px;
+      height: 0.375rem;
     }
 
     &::-webkit-scrollbar-track {
       background: var(--bg);
-      border-radius: var(--radius-full);
+      border-radius: 9999px;
     }
 
     &::-webkit-scrollbar-thumb {
       background: var(--border);
-      border-radius: var(--radius-full);
+      border-radius: 9999px;
 
       &:hover {
         background: var(--text-muted);
@@ -115,19 +116,19 @@ export default {
 
   &__loading {
     display: flex;
-    justify-content: center;
-    gap: var(--spacing-lg);
+    justify-content: flex-start;
+    gap: 0.75rem;
     overflow-x: auto;
   }
 
   &__skeleton {
-    min-width: 140px;
-    height: 260px;
-    border-radius: var(--radius-md);
+    min-width: 8.5rem;
+    height: 12.5rem;
+    border-radius: 0.75rem;
 
     @media (max-width: 599px) {
-      min-width: 120px;
-      height: 240px;
+      min-width: 6.5rem;
+      height: 11rem;
     }
   }
 
@@ -136,24 +137,24 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: var(--spacing-2xl) 0;
+    padding: 2rem 0;
     color: var(--text-muted);
 
     p {
-      margin-top: var(--spacing-md);
-      font-size: var(--font-base);
+      margin-top: 1rem;
+      font-size: 0.875rem;
     }
   }
 
   @media (max-width: 599px) {
-    padding: var(--spacing-lg);
+    padding: 1rem;
 
     &__title {
-      font-size: var(--font-lg);
+      font-size: 1rem;
     }
 
     &__cards {
-      gap: var(--spacing-md);
+      gap: 0.5rem;
     }
   }
 }

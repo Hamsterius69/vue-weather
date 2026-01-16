@@ -12,7 +12,7 @@
         :last-updated="heroData.lastUpdated"
       />
 
-      <!-- Stats Grid -->
+      <!-- Stats Grid with Air Quality integrated -->
       <div class="weather-display__section">
         <stats-grid>
           <weather-stat-card
@@ -23,19 +23,16 @@
             :value="stat.value"
             :sublabel="stat.sublabel"
           />
+          <!-- Air Quality Card integrated in grid -->
+          <air-quality-card
+            :air-data="airPollutionData"
+            :loading="airPollutionLoading"
+          />
         </stats-grid>
       </div>
 
-      <!-- Air Quality Section -->
-      <div class="weather-display__section">
-        <air-quality-section
-          :air-data="airPollutionData"
-          :loading="airPollutionLoading"
-        />
-      </div>
-
       <!-- Forecast Section -->
-      <div class="weather-display__section">
+      <div class="weather-display__section weather-display__section--tight">
         <forecast-section
           :forecasts="transformedForecastData"
           :loading="forecastTableLoading"
@@ -50,7 +47,7 @@ import { computed, watch, inject } from 'vue'
 import WeatherHero from './WeatherHero.vue'
 import WeatherStatCard from './WeatherStatCard.vue'
 import StatsGrid from './StatsGrid.vue'
-import AirQualitySection from './AirQualitySection.vue'
+import AirQualityCard from './AirQualityCard.vue'
 import ForecastSection from './ForecastSection.vue'
 import { useWeatherDataTransform } from '../composable/useWeatherDataTransform'
 import { useTheme } from '../composable/useTheme'
@@ -61,7 +58,7 @@ export default {
     WeatherHero,
     WeatherStatCard,
     StatsGrid,
-    AirQualitySection,
+    AirQualityCard,
     ForecastSection
   },
   props: {
@@ -145,23 +142,31 @@ export default {
 .weather-display {
   background-color: var(--bg);
   min-height: 100vh;
-  padding-top: var(--spacing-lg);
+  padding-top: 1.25rem;
 
   &__container {
-    max-width: 1400px;
+    max-width: 75rem;
     margin: 0 auto;
-    padding: 0 var(--spacing-lg) var(--spacing-xl);
+    padding: 0 1.5rem 2rem;
 
     @media (max-width: 599px) {
-      padding: 0 var(--spacing-md) var(--spacing-lg);
+      padding: 0 1rem 1.5rem;
     }
   }
 
   &__section {
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: 1.5rem;
 
     @media (max-width: 599px) {
-      margin-bottom: var(--spacing-lg);
+      margin-bottom: 1rem;
+    }
+
+    &--tight {
+      margin-bottom: 1rem;
+
+      @media (max-width: 599px) {
+        margin-bottom: 0.75rem;
+      }
     }
   }
 }

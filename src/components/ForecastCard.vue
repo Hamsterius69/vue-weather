@@ -6,7 +6,7 @@
     </div>
 
     <div class="forecast-card__icon">
-      <q-icon :name="weatherIcon" size="48px" />
+      <q-icon :name="weatherIcon" class="forecast-card__weather-icon" />
     </div>
 
     <div class="forecast-card__temps">
@@ -111,30 +111,31 @@ export default {
 
 <style lang="scss" scoped>
 .forecast-card {
-  background-color: var(--surface);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-lg);
+  background-color: var(--bg);
+  border-radius: 0.75rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-sm);
-  min-width: 140px;
+  gap: 0.375rem;
+  min-width: 8.5rem;
+  flex-shrink: 0;
   transition: all var(--transition-base);
 
   .body--light & {
-    box-shadow: var(--shadow-md);
+    background-color: #F8FAFC;
 
     &:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-2px);
+      background-color: #FFFFFF;
+      box-shadow: var(--shadow-sm);
     }
   }
 
   .body--dark & {
-    border: 1px solid var(--border);
+    background-color: rgba(255, 255, 255, 0.03);
 
     &:hover {
-      border-color: var(--accent);
+      background-color: rgba(255, 255, 255, 0.06);
     }
   }
 
@@ -144,53 +145,58 @@ export default {
   }
 
   &__day {
-    font-size: var(--font-base);
+    font-size: 0.9375rem;
     font-weight: var(--font-weight-semibold);
     color: var(--text);
   }
 
   &__date {
-    font-size: var(--font-sm);
+    font-size: 0.8125rem;
     color: var(--text-muted);
-    margin-top: var(--spacing-xs);
+    margin-top: 0.125rem;
   }
 
   &__icon {
     color: var(--accent);
-    margin: var(--spacing-sm) 0;
+    margin: 0.375rem 0;
+  }
+
+  &__weather-icon {
+    font-size: 2.5rem !important;
   }
 
   &__temps {
     display: flex;
-    gap: var(--spacing-md);
-    align-items: center;
+    gap: 0.5rem;
+    align-items: baseline;
   }
 
   &__temp {
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
 
     &--high {
-      font-size: var(--font-2xl);
+      font-size: 1.125rem;
       color: var(--text);
     }
 
     &--low {
-      font-size: var(--font-lg);
+      font-size: 0.9375rem;
       color: var(--text-muted);
     }
   }
 
   &__description {
-    font-size: var(--font-sm);
+    font-size: 0.8125rem;
     color: var(--text-muted);
     text-align: center;
     text-transform: capitalize;
+    line-height: 1.3;
   }
 
   &__details {
     display: flex;
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-xs);
+    gap: 0.5rem;
+    margin-top: 0.25rem;
     width: 100%;
     justify-content: center;
   }
@@ -198,25 +204,41 @@ export default {
   &__detail {
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    font-size: var(--font-xs);
+    gap: 0.125rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
+
+    .q-icon {
+      font-size: 0.875rem !important;
+    }
   }
 
   @media (max-width: 599px) {
-    padding: var(--spacing-md);
-    min-width: 120px;
+    padding: 0.75rem;
+    min-width: 6.5rem;
 
-    &__icon {
-      font-size: 40px !important;
+    &__day {
+      font-size: 0.875rem;
+    }
+
+    &__date {
+      font-size: 0.75rem;
+    }
+
+    &__weather-icon {
+      font-size: 2rem !important;
     }
 
     &__temp--high {
-      font-size: var(--font-xl);
+      font-size: 1rem;
     }
 
     &__temp--low {
-      font-size: var(--font-base);
+      font-size: 0.875rem;
+    }
+
+    &__description {
+      font-size: 0.75rem;
     }
   }
 }
