@@ -1,0 +1,68 @@
+{
+  "name": "vue-weather-app",
+  "version": "2.0.0",
+  "description": "A modern weather application built with Vue 3 and Quasar Framework. Features real-time weather data, 7-day forecasts, air quality index, and geolocation support.",
+  "productName": "WeatherApp",
+  "author": "Ariel Aguilar <ariel.aguilar.ricaldez@gmail.com>",
+  "private": true,
+  "keywords": [
+    "weather",
+    "vue3",
+    "quasar",
+    "openweathermap",
+    "forecast",
+    "air-quality"
+  ],
+  "homepage": "https://github.com/Hamsterius69/vue-weather",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Hamsterius69/vue-weather.git"
+  },
+  "scripts": {
+    "dev": "quasar dev",
+    "build": "quasar build",
+    "build:prod": "quasar build -m spa",
+    "preview": "quasar serve dist/spa --port 8080",
+    "lint": "eslint --ext .js,.vue ./",
+    "lint:fix": "eslint --ext .js,.vue ./ --fix",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.0.0",
+    "axios": "^1.13.2",
+    "core-js": "^3.6.5",
+    "quasar": "^2.0.0",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0",
+    "vuex": "^4.0.1"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.13.14",
+    "@quasar/app": "^3.0.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^7.14.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-vue": "^7.0.0",
+    "eslint-webpack-plugin": "^2.4.0",
+    "jest": "^28.1.0"
+  },
+  "browserslist": [
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
+  ],
+  "engines": {
+    "node": ">= 16.0.0",
+    "npm": ">= 8.0.0"
+  }
+}
