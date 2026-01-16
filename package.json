@@ -1,14 +1,31 @@
 {
-  "name": "vue-technical-challenge-tinkerlist",
-  "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Current weather data",
+  "name": "vue-weather-app",
+  "version": "2.0.0",
+  "description": "A modern weather application built with Vue 3 and Quasar Framework. Features real-time weather data, 7-day forecasts, air quality index, and geolocation support.",
+  "productName": "WeatherApp",
   "author": "Ariel Aguilar <ariel.aguilar.ricaldez@gmail.com>",
   "private": true,
+  "keywords": [
+    "weather",
+    "vue3",
+    "quasar",
+    "openweathermap",
+    "forecast",
+    "air-quality"
+  ],
+  "homepage": "https://github.com/Hamsterius69/vue-weather",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Hamsterius69/vue-weather.git"
+  },
   "scripts": {
     "dev": "quasar dev",
     "build": "quasar build",
+    "build:prod": "quasar build -m spa",
+    "preview": "quasar serve dist/spa --port 8080",
     "lint": "eslint --ext .js,.vue ./",
+    "lint:fix": "eslint --ext .js,.vue ./ --fix",
     "test": "jest"
   },
   "dependencies": {
@@ -45,8 +62,7 @@
     "last 5 Opera versions"
   ],
   "engines": {
-    "node": ">= 12.22.1",
-    "npm": ">= 6.13.4",
-    "yarn": ">= 1.21.1"
+    "node": ">= 16.0.0",
+    "npm": ">= 8.0.0"
   }
 }

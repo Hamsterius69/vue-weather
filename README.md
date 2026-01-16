@@ -1,64 +1,166 @@
-# Current weather data (vue-technical-challenge-tinkerlist)
+# WeatherApp
 
-A Quasar Framework app
+A modern, responsive weather application built with **Vue 3** and **Quasar Framework**. Get real-time weather data, 7-day forecasts, air quality information, and more.
 
-## Install the dependencies
+![Vue.js](https://img.shields.io/badge/Vue.js-3.x-4FC08D?style=flat-square&logo=vue.js)
+![Quasar](https://img.shields.io/badge/Quasar-2.x-1976D2?style=flat-square&logo=quasar)
+![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
+
+## Features
+
+- **Real-time Weather Data** - Current temperature, conditions, and detailed weather information
+- **7-Day Forecast** - Extended forecast with high/low temperatures and conditions
+- **Air Quality Index** - Monitor air pollution levels with health recommendations
+- **Geolocation** - Auto-detect your location for instant weather updates
+- **City Search with Autocomplete** - Search any city worldwide with intelligent suggestions
+- **Temperature Units** - Toggle between Celsius and Fahrenheit
+- **Dark/Light Theme** - Adaptive theme with smooth transitions
+- **Responsive Design** - Optimized for desktop, tablet, and mobile devices
+- **Keyboard Navigation** - Full keyboard support for accessibility
+
+## Demo
+
+Live demo: [https://vue-weather.pages.dev](https://vue-weather.pages.dev)
+
+## Screenshots
+
+| Light Mode | Dark Mode |
+|------------|-----------|
+| ![Light Mode](docs/light-mode.png) | ![Dark Mode](docs/dark-mode.png) |
+
+## Tech Stack
+
+- **Frontend Framework:** Vue 3 (Composition API)
+- **UI Framework:** Quasar 2
+- **State Management:** Vuex 4
+- **HTTP Client:** Axios
+- **Icons:** Line Awesome
+- **Build Tool:** Quasar CLI with Webpack
+
+## APIs Used
+
+| API | Purpose |
+|-----|---------|
+| [OpenWeatherMap](https://openweathermap.org/api) | Weather data, forecasts, and air quality |
+| [LocationIQ](https://locationiq.com/) | Geocoding and autocomplete |
+
+## Prerequisites
+
+- Node.js >= 16.0.0
+- npm >= 8.0.0
+
+## Installation
+
+### 1. Clone the repository
+
 ```bash
-yarn
+git clone https://github.com/Hamsterius69/vue-weather.git
+cd vue-weather
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### 2. Install dependencies
+
 ```bash
-quasar dev
+npm install
 ```
 
-### Lint the files
+### 3. Configure environment variables
+
+Create a `.env` file in the root directory:
+
 ```bash
-yarn lint
+cp .env.example .env
 ```
 
-### Build the app for production
-```bash
-quasar build
+Edit the `.env` file with your API keys:
+
+```env
+# OpenWeatherMap API
+OPENWEATHER_API_KEY=your_openweather_api_key_here
+
+# LocationIQ API
+LOCATIONIQ_TOKEN=your_locationiq_token_here
 ```
 
-### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+#### Getting API Keys
 
-# Technical Front End Developer Assingment
-If you made it all the way here, congratulations! A new challenge has arrived though. 💪
+1. **OpenWeatherMap API Key**
+   - Sign up at [OpenWeatherMap](https://openweathermap.org/api)
+   - Navigate to "API Keys" in your account
+   - Generate a new key (free tier includes 1,000 calls/day)
 
-Time for a technical assignment! Take as much time as you need to deliver your solution, while being reasonable. Please let us know if there are any unexpected delays or reasons why you can't take the test at this time. For any further questions, contact us via you HR contact at our company.
+2. **LocationIQ Token**
+   - Sign up at [LocationIQ](https://locationiq.com/)
+   - Get your token from the dashboard (free tier includes 5,000 requests/day)
 
-## Instructions
-+ Clone this repo
-+ Complete this exercise and submit either a zip of the solution or a link to a new repo
-+ Please target the latest stable release of Vue.js
-+ Use the [OpenWeatherMap API](https://openweathermap.org/api) for weather data
+### 4. Start development server
 
-## Requirements
-+ Solution should be responsive
-+ There should be an input where the user can write the location (city, for example) they want to get info for
-+ Show the weather info currently for the input location:
-  + Location (ie. Brussels, Belgium)
-  + Current weather description (ie. raining)
-  + Current temperature
-  + Today's high temperature
-  + Today's low temperature
-+ Add extra info about the current conditions on a hidden component the user can toggle the visibility:
-    + Wind Speed
-    + Humidity
-    + Pressure
-    + Sunrise/Sunset Time
-+ Show basic weather info for the next 7 days on that location
-+ Show basic weather info for the last 5 days on that location
-+ If there's a need to make a big number of requests, make them concurrent
+```bash
+npm run dev
+```
 
-## Bonus Round:
-__Was this too easy?__
-  + Pre-fill the input field with the user current location
-  + Deliver the solution hosted on your favourite cloud service with any appropriate changes you'd feel are relevant for a hosted solution
-  + Show the location on a map
-  + Auto complete the location input as the user types
-  + Lazy-load weather info
-  + Surprise us :)
+The app will be available at `http://localhost:8080`
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with hot-reload |
+| `npm run build` | Build for production |
+| `npm run build:prod` | Build SPA for production |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | Run ESLint and fix issues |
+| `npm run test` | Run tests |
+
+## Project Structure
+
+```
+vue-weather/
+├── public/                 # Static assets
+│   ├── _headers           # Cloudflare headers configuration
+│   └── _redirects         # Cloudflare redirects for SPA
+├── src/
+│   ├── api/               # API service layer
+│   │   └── weather.js     # Weather API calls
+│   ├── boot/              # Quasar boot files
+│   ├── components/        # Vue components
+│   │   ├── TopBar.vue
+│   │   ├── WeatherSearch.vue
+│   │   ├── WeatherDisplay.vue
+│   │   ├── WeatherHero.vue
+│   │   ├── WeatherStatCard.vue
+│   │   ├── StatsGrid.vue
+│   │   ├── AirQualityCard.vue
+│   │   ├── ForecastSection.vue
+│   │   └── ForecastCard.vue
+│   ├── composable/        # Vue composables
+│   │   ├── useTheme.js
+│   │   ├── useWeatherDataTransform.js
+│   │   └── useInputValidation.js
+│   ├── css/               # Global styles
+│   │   ├── app.scss
+│   │   └── design-tokens.css
+│   ├── layouts/           # Layout components
+│   ├── pages/             # Page components
+│   ├── router/            # Vue Router configuration
+│   └── store/             # Vuex store
+├── .env.example           # Environment variables template
+├── quasar.conf.js         # Quasar configuration
+└── package.json
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Weather data provided by [OpenWeatherMap](https://openweathermap.org/)
+- Geocoding by [LocationIQ](https://locationiq.com/)
+- UI components by [Quasar Framework](https://quasar.dev/)
+- Icons by [Line Awesome](https://icons8.com/line-awesome)
+
+---
+
+Made with Vue.js and Quasar Framework
