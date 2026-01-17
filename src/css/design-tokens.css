@@ -1,46 +1,9 @@
 /* Design Tokens - WeatherApp */
 
-/* === RESPONSIVE ROOT SCALE === */
-/* Base scale that makes everything larger on desktop */
+/* === ROOT SCALE === */
 html {
-  /* Mobile first: 16px base */
-  font-size: 100%;
+  font-size: 100%; /* 16px fixed */
   scroll-behavior: smooth;
-}
-
-/* Tablet: slight increase */
-@media (min-width: 600px) {
-  html {
-    font-size: 106.25%; /* 17px */
-  }
-}
-
-/* Small desktop */
-@media (min-width: 1024px) {
-  html {
-    font-size: 112.5%; /* 18px */
-  }
-}
-
-/* Large desktop */
-@media (min-width: 1280px) {
-  html {
-    font-size: 118.75%; /* 19px */
-  }
-}
-
-/* Extra large desktop */
-@media (min-width: 1440px) {
-  html {
-    font-size: 125%; /* 20px */
-  }
-}
-
-/* Ultra wide */
-@media (min-width: 1920px) {
-  html {
-    font-size: 131.25%; /* 21px */
-  }
 }
 
 :root {
